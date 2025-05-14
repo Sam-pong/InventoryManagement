@@ -1,0 +1,39 @@
+﻿<Window x:Class="MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InventoryManagement"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="720" Width="1280" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <Window.Background>
+        <ImageBrush ImageSource="vector-mar-2021-32_generated.jpg" Stretch="UniformToFill" Opacity="0.605"/>
+    </Window.Background>
+    <Grid>
+        <Button Content="    New Item" Margin="367,-18,367,424" HorizontalAlignment="Center" Height="285" Width="540" VerticalAlignment="Center" FontFamily="Global Monospace" Click="Button_Click" FontSize="22" FontWeight="Bold" BorderBrush="{x:Null}" Cursor="Hand" >
+            <Button.Effect>
+                <DropShadowEffect BlurRadius="10"/>
+            </Button.Effect>
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="OverridesDefaultStyle" Value="True" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter 
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+            <Button.Background>
+                <ImageBrush ImageSource="vecteezy_abstract-hud-display-infographic-sci-fi-futuristic-information_34556660.png" Stretch="Uniform"/>
+            </Button.Background>
+        </Button>
+
+    </Grid>
+</Window>
