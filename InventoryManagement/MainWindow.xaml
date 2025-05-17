@@ -5,35 +5,95 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InventoryManagement"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="InventoryManagement" Height="720" Width="1280" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" WindowState="Maximized">
     <Window.Background>
-        <ImageBrush ImageSource="vector-mar-2021-32_generated.jpg" Stretch="UniformToFill" Opacity="0.605"/>
+        <ImageBrush ImageSource="vecteezy_shining-and-cool-pink-grey-color-gradient-background_49401949.jpg" Stretch="UniformToFill" Opacity="0.605"/>
     </Window.Background>
     <Grid>
-        <Button Content="    New Item" Margin="367,-18,367,424" HorizontalAlignment="Center" Height="285" Width="540" VerticalAlignment="Center" FontFamily="Global Monospace" Click="Button_Click" FontSize="22" FontWeight="Bold" BorderBrush="{x:Null}" Cursor="Hand" >
-            <Button.Effect>
-                <DropShadowEffect BlurRadius="10"/>
-            </Button.Effect>
-            <Button.Style>
-                <Style TargetType="Button">
-                    <Setter Property="OverridesDefaultStyle" Value="True" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="{TemplateBinding Background}">
-                                    <ContentPresenter 
+        <StackPanel HorizontalAlignment="Left" Height="90" Margin="60,55,0,0" VerticalAlignment="Top" Width="100">
+            <Button Content="" HorizontalAlignment="Center" Height="60" Width="100" VerticalAlignment="Center" FontFamily="Global Monospace" Click="Button_Click" FontSize="22" FontWeight="Bold" BorderBrush="#FFD63A3A" Cursor="Hand" >
+                <Button.Background>
+                    <ImageBrush ImageSource="add-post.png" Stretch="Uniform"/>
+                </Button.Background>
+
+                <Button.Effect>
+                    <DropShadowEffect BlurRadius="10"/>
+                </Button.Effect>
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.Style>
+
+                    <Style TargetType="{x:Type Button}">
+
+                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter 
                                 HorizontalAlignment="Center" 
                                 VerticalAlignment="Center" />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Button.Style>
-            <Button.Background>
-                <ImageBrush ImageSource="vecteezy_abstract-hud-display-infographic-sci-fi-futuristic-information_34556660.png" Stretch="Uniform"/>
-            </Button.Background>
-        </Button>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+
+            </Button>
+            <TextBlock TextWrapping="Wrap" Text="New Item" FontFamily="Global Monospace" FontSize="20"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Height="90" Margin="180,55,0,0" VerticalAlignment="Top" Width="110" MinWidth="5" MinHeight="5" Panel.ZIndex="5" Grid.RowSpan="5">
+            <Button Content="" HorizontalAlignment="Center" Height="60" Width="100" VerticalAlignment="Center" FontFamily="Global Monospace" Click="Button_Click" FontSize="22" FontWeight="Bold" BorderBrush="#FFD63A3A" Cursor="Hand" Padding="5,7,6,10" Margin="5,0" >
+                <Button.Background>
+                    <ImageBrush ImageSource="editing.png" Stretch="Uniform"/>
+                </Button.Background>
+
+                <Button.Effect>
+                    <DropShadowEffect BlurRadius="10"/>
+                </Button.Effect>
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.Style>
+
+                    <Style TargetType="{x:Type Button}">
+
+                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter 
+                                            HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+
+            </Button>
+            <TextBlock TextWrapping="Wrap" Text="Edit Item" FontFamily="Global Monospace" FontSize="20" Height="25"/>
+        </StackPanel>
 
     </Grid>
 </Window>

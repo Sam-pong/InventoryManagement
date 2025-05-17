@@ -6,15 +6,7 @@ Public Class NewItemWindow
     End Sub
 
     Sub FillTAGCOMBO()
-        TAGCOMBO.ItemsSource = Nothing
         TAGCOMBO.Items.Clear()
-        nametxt.Text = Nothing
-        desctxt.Text = Nothing
-        locationtxt.Text = Nothing
-        purchasetxt.Text = Nothing
-        retailtxt.Text = Nothing
-        barcodetxt.Text = Nothing
-        stocktxt.Text = Nothing
 
         Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
             Using com As New SQLiteCommand("SELECT * FROM TAGS", con)
@@ -26,7 +18,7 @@ Public Class NewItemWindow
                     ad.Fill(dt)
                     TAGCOMBO.ItemsSource = dt.DefaultView
                     TAGCOMBO.DisplayMemberPath = "TAGNAME"
-                    TAGCOMBO.SelectedValuePath = "TAGID"
+                    TAGCOMBO.SelectedValue = "TAGID"
                 Catch ex As SQLiteException
                     MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
 
@@ -47,16 +39,15 @@ Public Class NewItemWindow
                 Try
                     con.Open()
 
-                    Using ad As New SQLiteDataAdapter(com)
-                        Dim dt As New DataTable
-                        ad.Fill(dt)
+                    Using RDR = com.ExecuteReader
+                        If RDR.HasRows Then
+                            Do While RDR.Read
+                                Dim ItemIDINT As Integer
+                                ItemIDINT = RDR.Item("Max(SerielNumber)")
 
-                        If dt.Rows.Count > 0 Then
-                            Dim ItemIDINT As Integer
-                            ItemIDINT = dt.Rows.Item(0)(0).ToString
+                                ItemID.Text = ItemIDINT + 1
 
-                            ItemID.Text = ItemIDINT + 1
-
+                            Loop
                         Else
                             ItemID.Text = 1
                         End If
@@ -92,58 +83,42 @@ Public Class NewItemWindow
             nametxt.Focus()
         ElseIf desctxt.Text = Nothing Then
             desctxt.Focus()
-        ElseIf TAGCOMBO.SelectedIndex < 0 Then
-            TAGCOMBO.Focus()
         ElseIf locationtxt.Text = Nothing Then
             locationtxt.Focus()
-
-
-        ElseIf stocktxt.Text = Nothing Then
-            stocktxt.Focus()
-
         ElseIf purchasetxt.Text = Nothing Then
             purchasetxt.Focus()
         ElseIf retailtxt.Text = Nothing Then
             retailtxt.Focus()
-
         ElseIf barcodetxt.Text = Nothing Then
             barcodetxt.Focus()
-        Else
-            Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
-                Try
-
-
-                    Using cmd As New SQLiteCommand("INSERT INTO ITEMS (ItemName, Desc, TagID, Location, Stock, PurchasePrice, RetailPrice, Barcode) VALUES 
-(@NameItem, @Description, @IDTag, @Loc, @Stock, @Purchase, @Retail, @Barc)", con)
-                        cmd.Parameters.AddWithValue("@NameItem", nametxt.Text)
-                        cmd.Parameters.AddWithValue("@Description", desctxt.Text)
-                        cmd.Parameters.AddWithValue("@IDTag", TAGCOMBO.SelectedValue)
-                        cmd.Parameters.AddWithValue("@Loc", locationtxt.Text)
-                        cmd.Parameters.AddWithValue("@Stock", stocktxt.Text)
-                        cmd.Parameters.AddWithValue("@Purchase", purchasetxt.Text)
-                        cmd.Parameters.AddWithValue("@Retail", retailtxt.Text)
-                        cmd.Parameters.AddWithValue("@Barc", barcodetxt.Text)
-
-                        con.Open()
-                        cmd.ExecuteNonQuery()
-                        MsgBox("Success!")
-                        FillTAGCOMBO()
-                        ItemIDFill()
-
-                        con.Close()
-                    End Using
-                Catch ex As SQLiteException
-                    MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
-
-                Catch ex As Exception
-                    MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
-
-                End Try
-            End Using
-
         End If
+        Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
+            Try
 
 
+                Using cmd As New SQLiteCommand("INSERT INTO ITEMS (ItemName, Desc, TagID, Location, Stock, PurchasePrice, RetailPrice, Barcode) VALUES 
+(@NameItem, @Description, @IDTag, @Loc, @Stock, @Purchase, @Retail, @Barc)", con)
+                    cmd.Parameters.AddWithValue("@NameItem", nametxt.Text)
+                    cmd.Parameters.AddWithValue("@Description", desctxt.Text)
+                    cmd.Parameters.AddWithValue("@IDTag", TAGCOMBO.SelectedValue)
+                    cmd.Parameters.AddWithValue("@Loc", locationtxt.Text)
+                    cmd.Parameters.AddWithValue("@Stock", stocktxt.Text)
+                    cmd.Parameters.AddWithValue("@Purchace", purchasetxt.Text)
+                    cmd.Parameters.AddWithValue("@Retail", retailtxt.Text)
+                    cmd.Parameters.AddWithValue("@Barc", barcodetxt.Text)
+
+                    con.Open()
+                    cmd.ExecuteNonQuery()
+                    con.Close()
+                End Using
+            Catch ex As SQLiteException
+                MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+            Catch ex As Exception
+                MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+            End Try
+        End Using
 
     End Sub
 End Class
