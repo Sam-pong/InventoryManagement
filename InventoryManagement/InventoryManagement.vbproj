@@ -129,14 +129,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="EditItemWindow.vb" />
+    <Compile Include="Item.vb" />
     <Compile Include="NewItemWindow.xaml.vb">
       <DependentUpon>NewItemWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewTag.xaml.vb">
       <DependentUpon>NewTag.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Window1.xaml.vb">
-      <DependentUpon>Window1.xaml</DependentUpon>
     </Compile>
     <Page Include="EditItemWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -159,10 +157,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NewTag.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -238,6 +232,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="editing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="vecteezy_beautiful-colorful-gradient-background-combination-of_7105420.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />

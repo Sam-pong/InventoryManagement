@@ -1,11 +1,14 @@
-﻿Imports System.Data.SQLite
+﻿Imports System.Collections.ObjectModel
+Imports System.ComponentModel
 Imports System.Data
-Public Class NewItemWindow
-    Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
-        Me.Close()
-    End Sub
+Imports System.Data.SQLite
+Class EditItemWindow
 
-    Sub FillTAGCOMBO()
+    Private items As ObservableCollection(Of Item)
+    Private View As ICollectionView
+
+    Sub tagfill()
+        TAGCOMBO.ItemsSource = Nothing
         TAGCOMBO.Items.Clear()
 
         Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
@@ -18,7 +21,7 @@ Public Class NewItemWindow
                     ad.Fill(dt)
                     TAGCOMBO.ItemsSource = dt.DefaultView
                     TAGCOMBO.DisplayMemberPath = "TAGNAME"
-                    TAGCOMBO.SelectedValue = "TAGID"
+                    TAGCOMBO.SelectedValuePath = "TAGID"
                 Catch ex As SQLiteException
                     MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
 
@@ -33,92 +36,102 @@ Public Class NewItemWindow
         End Using
     End Sub
 
-    Sub ItemIDFill()
+
+    Private Function LoadItemsFromDatabase() As ObservableCollection(Of Item)
+        Dim items As New ObservableCollection(Of Item)()
+
         Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
-            Using com As New SQLiteCommand("SELECT Max(SerielNumber) FROM ITEMS", con)
-                Try
-                    con.Open()
-
-                    Using RDR = com.ExecuteReader
-                        If RDR.HasRows Then
-                            Do While RDR.Read
-                                Dim ItemIDINT As Integer
-                                ItemIDINT = RDR.Item("Max(SerielNumber)")
-
-                                ItemID.Text = ItemIDINT + 1
-
-                            Loop
-                        Else
-                            ItemID.Text = 1
-                        End If
-
-                    End Using
-                Catch ex As SQLiteException
-                    MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
-
-                Catch ex As Exception
-                    MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
-
-                End Try
-            End Using
-            con.Close()
-
-
-        End Using
-
-    End Sub
-    Private Sub NewItemWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        FillTAGCOMBO()
-        ItemIDFill()
-    End Sub
-
-    Private Sub Button_Click_1(sender As Object, e As RoutedEventArgs)
-        Dim NewT As New NewTag
-        Me.Close()
-        NewT.ShowDialog()
-    End Sub
-
-    Private Sub Button_Click_2(sender As Object, e As RoutedEventArgs)
-        If nametxt.Text = Nothing Then
-            nametxt.Focus()
-        ElseIf desctxt.Text = Nothing Then
-            desctxt.Focus()
-        ElseIf locationtxt.Text = Nothing Then
-            locationtxt.Focus()
-        ElseIf purchasetxt.Text = Nothing Then
-            purchasetxt.Focus()
-        ElseIf retailtxt.Text = Nothing Then
-            retailtxt.Focus()
-        ElseIf barcodetxt.Text = Nothing Then
-            barcodetxt.Focus()
-        End If
-        Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
-            Try
-
-
-                Using cmd As New SQLiteCommand("INSERT INTO ITEMS (ItemName, Desc, TagID, Location, Stock, PurchasePrice, RetailPrice, Barcode) VALUES 
-(@NameItem, @Description, @IDTag, @Loc, @Stock, @Purchase, @Retail, @Barc)", con)
-                    cmd.Parameters.AddWithValue("@NameItem", nametxt.Text)
-                    cmd.Parameters.AddWithValue("@Description", desctxt.Text)
-                    cmd.Parameters.AddWithValue("@IDTag", TAGCOMBO.SelectedValue)
-                    cmd.Parameters.AddWithValue("@Loc", locationtxt.Text)
-                    cmd.Parameters.AddWithValue("@Stock", stocktxt.Text)
-                    cmd.Parameters.AddWithValue("@Purchace", purchasetxt.Text)
-                    cmd.Parameters.AddWithValue("@Retail", retailtxt.Text)
-                    cmd.Parameters.AddWithValue("@Barc", barcodetxt.Text)
-
-                    con.Open()
-                    cmd.ExecuteNonQuery()
-                    con.Close()
+            con.Open()
+            Dim sql As String = "SELECT SerielNumber, ItemName, Desc, Barcode, Location, Stock, TagName, PurchasePrice, RetailPrice FROM Items INNER JOIN TAGS ON Items.TAGID = TAGS.TAGID"
+            Using cmd As New SQLiteCommand(sql, con)
+                Using reader As SQLiteDataReader = cmd.ExecuteReader()
+                    While reader.Read()
+                        items.Add(New Item With {
+                            .ID = Convert.ToInt32(reader("SerielNumber")),
+                            .Name = reader("ItemName").ToString(),
+                            .Description = reader("Desc").ToString,
+                                                        .Tag = reader("TagName"),
+                            .Barcode = reader("Barcode").ToString,
+                            .Location = reader("Location").ToString,
+                            .Stock = Convert.ToInt32(reader("Stock")),
+                            .BuyingPrice = Convert.ToDecimal(reader("PurchasePrice")),
+                            .SellingPrice = Convert.ToDecimal(reader("RetailPrice"))
+                                  }
+                        )
+                    End While
                 End Using
-            Catch ex As SQLiteException
-                MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
-
-            Catch ex As Exception
-                MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
-
-            End Try
+            End Using
         End Using
+
+        Return items
+    End Function
+
+    Private Function FilterItems(obj As Object) As Boolean
+        Dim item As Item = TryCast(obj, Item)
+        If item Is Nothing Then Return False
+
+        If Not String.IsNullOrWhiteSpace(nametxt.Text) AndAlso
+        Not item.Name.ToLower().Contains(nametxt.Text.ToLower()) Then Return False
+
+        If Not String.IsNullOrWhiteSpace(desctxt.Text) AndAlso
+        Not item.Description.ToLower().Contains(desctxt.Text.ToLower()) Then Return False
+
+        If Not String.IsNullOrWhiteSpace(barcodetxt.Text) AndAlso
+        Not item.Barcode.ToLower().Contains(barcodetxt.Text.ToLower()) Then Return False
+
+        If Not String.IsNullOrWhiteSpace(locationtxt.Text) AndAlso
+        Not item.Location.ToLower().Contains(locationtxt.Text.ToLower()) Then Return False
+
+        If Not String.IsNullOrWhiteSpace(stocktxt.Text) AndAlso
+        Not item.Stock.ToString().Contains(stocktxt.Text) Then Return False
+
+        If TAGCOMBO.SelectedValue IsNot Nothing AndAlso
+   Not String.IsNullOrWhiteSpace(TAGCOMBO.SelectedValue.ToString()) AndAlso
+   Not item.Tag.ToString().Contains(TAGCOMBO.SelectedValue.ToString()) Then
+            Return False
+        End If
+        If Not String.IsNullOrWhiteSpace(ItemID.Text) AndAlso
+        Not item.ID.ToString().Contains(ItemID.Text) Then Return False
+
+        If Not String.IsNullOrWhiteSpace(purchasetxt.Text) AndAlso
+        Not item.BuyingPrice.ToString().Contains(purchasetxt.Text) Then Return False
+
+        If Not String.IsNullOrWhiteSpace(retailtxt.Text) AndAlso
+        Not item.SellingPrice.ToString().Contains(retailtxt.Text) Then Return False
+
+        Return True
+    End Function
+
+
+    Private Sub Edititemwindow_loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+        SearchResult.ItemsSource = Nothing
+
+        SearchResult.Items.Clear()
+        items = LoadItemsFromDatabase()
+
+        View = CollectionViewSource.GetDefaultView(items)
+        View.Filter = AddressOf FilterItems
+
+        SearchResult.ItemsSource = View
+        SearchResult.Columns(5).Visibility = Visibility.Collapsed
+        SearchResult.Columns(6).Visibility = Visibility.Collapsed
+        SearchResult.Columns(7).Visibility = Visibility.Collapsed
+        SearchResult.Columns(8).Visibility = Visibility.Collapsed
+
+        tagfill()
+    End Sub
+
+
+
+    Private Sub TextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles nametxt.TextChanged, ItemID.TextChanged, purchasetxt.TextChanged, stocktxt.TextChanged, locationtxt.TextChanged, retailtxt.TextChanged, barcodetxt.TextChanged, desctxt.TextChanged
+        If View IsNot Nothing Then
+            View.Refresh()
+        End If
+    End Sub
+
+    Private Sub Button3_click(sender As Object, e As RoutedEventArgs)
+        Me.Close()
+
 
     End Sub
 End Class

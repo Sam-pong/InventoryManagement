@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         Title="InventoryManagement" Height="720" Width="1280" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" WindowState="Maximized">
     <Window.Background>
-        <ImageBrush ImageSource="vecteezy_shining-and-cool-pink-grey-color-gradient-background_49401949.jpg" Stretch="UniformToFill" Opacity="0.605"/>
+        <ImageBrush ImageSource="vecteezy_beautiful-colorful-gradient-background-combination-of_7105420.jpg" Stretch="UniformToFill" Opacity="0.605"/>
     </Window.Background>
     <Grid>
         <StackPanel HorizontalAlignment="Left" Height="90" Margin="60,55,0,0" VerticalAlignment="Top" Width="100">
-            <Button Content="" HorizontalAlignment="Center" Height="60" Width="100" VerticalAlignment="Center" FontFamily="Global Monospace" Click="Button_Click" FontSize="22" FontWeight="Bold" BorderBrush="#FFD63A3A" Cursor="Hand" >
+            <Button Content="" HorizontalAlignment="Center" Height="60" Width="100" VerticalAlignment="Center" FontFamily="Global Monospace" Click="Button_Click" FontSize="22" FontWeight="Bold" Cursor="Hand" >
                 <Button.Background>
                     <ImageBrush ImageSource="add-post.png" Stretch="Uniform"/>
                 </Button.Background>
@@ -50,10 +50,10 @@
                 </Button.Style>
 
             </Button>
-            <TextBlock TextWrapping="Wrap" Text="New Item" FontFamily="Global Monospace" FontSize="20"/>
+            <TextBlock TextWrapping="Wrap" Text="New Item" FontFamily="Global Monospace" FontSize="20" Foreground="Black"/>
         </StackPanel>
         <StackPanel HorizontalAlignment="Left" Height="90" Margin="180,55,0,0" VerticalAlignment="Top" Width="110" MinWidth="5" MinHeight="5" Panel.ZIndex="5" Grid.RowSpan="5">
-            <Button Content="" HorizontalAlignment="Center" Height="60" Width="100" VerticalAlignment="Center" FontFamily="Global Monospace" Click="Button_Click" FontSize="22" FontWeight="Bold" BorderBrush="#FFD63A3A" Cursor="Hand" Padding="5,7,6,10" Margin="5,0" >
+            <Button Content="" HorizontalAlignment="Center" Height="60" Width="100" VerticalAlignment="Center" FontFamily="Global Monospace" Click="Button_Click2" FontSize="22" FontWeight="Bold" BorderBrush="#FFD63A3A" Cursor="Hand" Padding="5,7,6,10" Margin="5,0" >
                 <Button.Background>
                     <ImageBrush ImageSource="editing.png" Stretch="Uniform"/>
                 </Button.Background>
@@ -92,7 +92,7 @@
                 </Button.Style>
 
             </Button>
-            <TextBlock TextWrapping="Wrap" Text="Edit Item" FontFamily="Global Monospace" FontSize="20" Height="25"/>
+            <TextBlock TextWrapping="Wrap" Text="Edit Item" FontFamily="Global Monospace" FontSize="20" Height="25" Foreground="Black"/>
         </StackPanel>
 
     </Grid>

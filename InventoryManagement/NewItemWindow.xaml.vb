@@ -43,7 +43,7 @@ Public Class NewItemWindow
 
     Sub ItemIDFill()
         Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
-            Using com As New SQLiteCommand("SELECT Max(SerielNumber) FROM ITEMS", con)
+            Using com As New SQLiteCommand("SELECT IFNULL(MAX(SerielNumber), 0) FROM ITEMS", con)
                 Try
                     con.Open()
 
@@ -52,11 +52,8 @@ Public Class NewItemWindow
                         ad.Fill(dt)
 
                         If dt.Rows.Count > 0 Then
-                            Dim ItemIDINT As Integer
-                            ItemIDINT = dt.Rows.Item(0)(0).ToString
-
-                            ItemID.Text = ItemIDINT + 1
-
+                            Dim maxID As Integer = Convert.ToInt32(dt.Rows(0)(0))
+                            ItemID.Text = (maxID + 1).ToString()
                         Else
                             ItemID.Text = 1
                         End If

@@ -1,11 +1,11 @@
-﻿<Window x:Class="NewItemWindow"
+﻿<Window x:Class="EditItemWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InventoryManagement" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="NewItemWindow" Height="620" Width="500"
+        Title="Edit Item" Height="620" Width="1140"
                      AllowsTransparency="True"
           WindowStyle="None"
          ResizeMode="NoResize" WindowStartupLocation="CenterScreen"     >
@@ -102,41 +102,26 @@
 
 
         <Grid>
-
-            <Button Content="Add New Item" Margin="116,499,116,0" FontFamily="Global Monospace" FontSize="36" FontWeight="Bold" FontStyle="Italic" Background="{x:Null}" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Style="{StaticResource HoverButtonStyle2}" VerticalAlignment="Top" Click="Button_Click_2">
-                <Button.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform AngleX="-16.39"/>
-                        <RotateTransform/>
-                        <TranslateTransform X="4.706"/>
-                    </TransformGroup>
-                </Button.RenderTransform>
-            </Button>
-            <StackPanel Height="50" Margin="0,68,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4">
+            <StackPanel Height="50" Margin="10,202,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4" Width="462" HorizontalAlignment="Left">
                 <Label Content="Name" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
 
-                <xctk:WatermarkTextBox x:Name="nametxt" Width="270" Height="30" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="lime" FontFamily="Global Monospace" FontSize="22"
+                <xctk:WatermarkTextBox x:Name="nametxt" Width="270" Height="42" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="lime" FontFamily="Global Monospace" FontSize="22"
                                 Watermark="[Enter Text]" SelectionTextBrush="White" />
 
             </StackPanel>
-            <Button Content="Cancel" Margin="203,543,201,0" FontFamily="Global Monospace" FontSize="24" FontWeight="Bold" FontStyle="Italic" Background="{x:Null}" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Click="Button_Click" Style="{StaticResource HoverButtonStyle}" VerticalAlignment="Top" Width="88"/>
-            <StackPanel Height="50" Margin="0,118,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7">
+            <StackPanel Height="50" Margin="10,252,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left">
                 <Label Content="Description" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
 
-                <xctk:WatermarkTextBox x:Name="desctxt" Width="270" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Lime" FontFamily="Global Monospace" FontSize="22"
+                <xctk:WatermarkTextBox x:Name="desctxt" Width="270" Height="42" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Lime" FontFamily="Global Monospace" FontSize="22"
                     Watermark="[Enter Text]" SelectionTextBrush="White" />
 
             </StackPanel>
-            <StackPanel Height="50" Margin="0,168,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4">
+            <StackPanel Height="50" Margin="10,302,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4" Width="462" HorizontalAlignment="Left">
 
-                <Label Content="Tag" Width="146" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
-                <Button Content="New Tag" FontFamily="Global Monospace" FontSize="14" FontWeight="Bold" FontStyle="Italic" Background="{x:Null}" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5" Style="{StaticResource HoverButtonStyle2}" VerticalAlignment="Top" Click="Button_Click_1" Width="80" Height="22" Margin="0,28,0,0"/>
-                <ComboBox x:Name="TAGCOMBO" Width="265"     Background="#FF8AC4C7"
+                <Label Content="Tag" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
+                <ComboBox x:Name="TAGCOMBO" Width="215"     Background="#FF8AC4C7"
     BorderBrush="Transparent"
     Foreground="lime"
-
-    HorizontalAlignment="Center"
     VerticalAlignment="Center" Height="50" FontFamily="Global Monospace" FontSize="22"
 >
                     <ComboBox.Style>
@@ -182,51 +167,68 @@
                         </Style>
                     </ComboBox.Style>
 
-=                </ComboBox>
+                    =
+                </ComboBox>
 
             </StackPanel>
-            <StackPanel Height="50" Margin="0,218,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7">
+            <StackPanel Height="50" Margin="10,352,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left">
                 <Label Content="Location" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
 
-                <xctk:WatermarkTextBox x:Name="locationtxt" Width="270" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Lime" FontFamily="Global Monospace" FontSize="22"
+                <xctk:WatermarkTextBox x:Name="locationtxt" Width="270" Height="42" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Lime" FontFamily="Global Monospace" FontSize="22"
                     Watermark="[Enter Text]" SelectionTextBrush="White" />
 
             </StackPanel>
-            <StackPanel Height="50" Margin="0,268,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4">
+            <StackPanel Height="50" Margin="10,403,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4" Width="462" HorizontalAlignment="Left">
                 <Label Content="Stock Left" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
 
-                <xctk:WatermarkTextBox x:Name="stocktxt" Width="270" Height="30" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="lime" FontFamily="Global Monospace" FontSize="22"
+                <xctk:WatermarkTextBox x:Name="stocktxt" Width="270" Height="44" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="lime" FontFamily="Global Monospace" FontSize="22"
                     Watermark="[Enter Amount]" SelectionTextBrush="White" />
 
             </StackPanel>
-            <StackPanel Height="50" Margin="0,18,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7">
+            <StackPanel Height="50" Margin="10,152,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left">
                 <Label Content="ID" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
 
-                <xctk:WatermarkTextBox x:Name="ItemID" Width="270" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="BlueViolet" FontFamily="Global Monospace" FontSize="22"
-                    Watermark="Error, Call Admin" SelectionTextBrush="White" />
+                <xctk:WatermarkTextBox x:Name="ItemID" Width="270" Height="42" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="BlueViolet" FontFamily="Global Monospace" FontSize="22"
+                    Watermark="[Enter ID]" SelectionTextBrush="White" />
 
             </StackPanel>
-            <StackPanel Height="50" Margin="0,318,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7">
+            <StackPanel Height="50" Margin="10,452,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left">
                 <Label Content="Purchase Price" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
 
-                <xctk:WatermarkTextBox x:Name="purchasetxt" Width="270" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Lime" FontFamily="Global Monospace" FontSize="22"
+                <xctk:WatermarkTextBox x:Name="purchasetxt" Width="270" Height="32" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Lime" FontFamily="Global Monospace" FontSize="22"
                     Watermark="[Enter Amount]" SelectionTextBrush="White" />
 
             </StackPanel>
-            <StackPanel Height="50" Margin="0,368,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4">
+            <StackPanel Height="50" Margin="10,502,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4" Width="462" HorizontalAlignment="Left">
                 <Label Content="Retail Price" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
 
-                <xctk:WatermarkTextBox x:Name="retailtxt" Width="270" Height="30" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="lime" FontFamily="Global Monospace" FontSize="22"
+                <xctk:WatermarkTextBox x:Name="retailtxt" Width="270" Height="42" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="lime" FontFamily="Global Monospace" FontSize="22"
                     Watermark="[Enter Text]" SelectionTextBrush="White" />
 
             </StackPanel>
-            <StackPanel Height="50" Margin="0,418,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7">
+            <StackPanel Height="50" Margin="10,552,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left">
                 <Label Content="Barcode" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
 
-                <xctk:WatermarkTextBox x:Name="barcodetxt" Width="270" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Lime" FontFamily="Global Monospace" FontSize="22"
+                <xctk:WatermarkTextBox x:Name="barcodetxt" Width="270" Height="42" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="Lime" FontFamily="Global Monospace" FontSize="22"
                     Watermark="[Enter Barcode]" SelectionTextBrush="White" />
 
             </StackPanel>
+            <DataGrid x:Name="SearchResult"   ColumnWidth="Auto" HorizontalAlignment="Left" Height="450" Margin="488,152,0,0" VerticalAlignment="Top" Width="634" Background="#808AC4C7" BorderBrush="Black" FontFamily="Global Monospace" FontSize="24" IsReadOnly="True" FontWeight="Bold" SelectionMode="Single" AlternatingRowBackground="#FF85ABAD" RowBackground="#808AC4C7" AlternationCount="2" >
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#FF8AC4C7"/>
+                        <Setter Property="BorderBrush" Value="black"/>
+                        <Setter Property="BorderThickness" Value="0.5"/>
+
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Effect>
+                    <DropShadowEffect/>
+                </DataGrid.Effect>
+            </DataGrid>
+            <Label Content="Search Item" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" FontFamily="Global Monospace" FontSize="36" FontWeight="Bold" FontStyle="Italic"/>
+            <Button Content="Close" Margin="0,51,0,0" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold" FontStyle="Italic" Background="{x:Null}" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Click="Button3_Click" Style="{StaticResource HoverButtonStyle}" VerticalAlignment="Top" Width="88"/>
+
         </Grid>
     </Border>
 </Window>
