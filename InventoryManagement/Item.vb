@@ -8,4 +8,5 @@
     Public Property SellingPrice As Decimal
     Public Property Location As String
     Public Property Stock As Integer
+    Public Property TagID As Integer
 End Class

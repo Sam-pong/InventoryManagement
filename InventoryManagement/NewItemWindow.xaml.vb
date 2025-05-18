@@ -76,6 +76,14 @@ Public Class NewItemWindow
     Private Sub NewItemWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         FillTAGCOMBO()
         ItemIDFill()
+        nametxt.Focus()
+
+    End Sub
+
+    Private Sub Window_PreviewKeyDown(sender As Object, e As KeyEventArgs) Handles Me.PreviewKeyDown
+        If e.Key = Key.Escape Then
+            Me.Close()
+        End If
     End Sub
 
     Private Sub Button_Click_1(sender As Object, e As RoutedEventArgs)

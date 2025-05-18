@@ -2,6 +2,7 @@
 Imports System.ComponentModel
 Imports System.Data
 Imports System.Data.SQLite
+Imports Xceed.Wpf.Toolkit.Primitives
 Class EditItemWindow
 
     Private items As ObservableCollection(Of Item)
@@ -42,7 +43,7 @@ Class EditItemWindow
 
         Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
             con.Open()
-            Dim sql As String = "SELECT SerielNumber, ItemName, Desc, Barcode, Location, Stock, TagName, PurchasePrice, RetailPrice FROM Items INNER JOIN TAGS ON Items.TAGID = TAGS.TAGID"
+            Dim sql As String = "SELECT SerielNumber, ItemName, Desc, Barcode, Location, Stock, TagName, PurchasePrice, RetailPrice, Items.TagID FROM Items INNER JOIN TAGS ON Items.TAGID = TAGS.TAGID"
             Using cmd As New SQLiteCommand(sql, con)
                 Using reader As SQLiteDataReader = cmd.ExecuteReader()
                     While reader.Read()
@@ -55,7 +56,8 @@ Class EditItemWindow
                             .Location = reader("Location").ToString,
                             .Stock = Convert.ToInt32(reader("Stock")),
                             .BuyingPrice = Convert.ToDecimal(reader("PurchasePrice")),
-                            .SellingPrice = Convert.ToDecimal(reader("RetailPrice"))
+                            .SellingPrice = Convert.ToDecimal(reader("RetailPrice")),
+                            .TagID = Convert.ToDecimal(reader("TagID"))
                                   }
                         )
                     End While
@@ -87,9 +89,10 @@ Class EditItemWindow
 
         If TAGCOMBO.SelectedValue IsNot Nothing AndAlso
    Not String.IsNullOrWhiteSpace(TAGCOMBO.SelectedValue.ToString()) AndAlso
-   Not item.Tag.ToString().Contains(TAGCOMBO.SelectedValue.ToString()) Then
+   Not item.TagID.ToString().Contains(TAGCOMBO.SelectedValue.ToString()) Then
             Return False
         End If
+
         If Not String.IsNullOrWhiteSpace(ItemID.Text) AndAlso
         Not item.ID.ToString().Contains(ItemID.Text) Then Return False
 
@@ -117,8 +120,19 @@ Class EditItemWindow
         SearchResult.Columns(6).Visibility = Visibility.Collapsed
         SearchResult.Columns(7).Visibility = Visibility.Collapsed
         SearchResult.Columns(8).Visibility = Visibility.Collapsed
+        SearchResult.Columns(9).Visibility = Visibility.Collapsed
+
+        SearchResult.Columns(0).Width = 35 ' SerielNumber
+        SearchResult.Columns(1).Width = 150 ' ItemName
+        SearchResult.Columns(2).Width = 180 ' Desc
+        SearchResult.Columns(3).Width = 135 ' Barcode
+        SearchResult.Columns(4).Width = 120 ' TagName
 
         tagfill()
+        clearbut.Visibility = Visibility.Collapsed
+        delbutton.Visibility = Visibility.Collapsed
+        updatebutton.Visibility = Visibility.Collapsed
+
     End Sub
 
 
@@ -128,10 +142,218 @@ Class EditItemWindow
             View.Refresh()
         End If
     End Sub
+    Private Sub combochange(sender As Object, e As RoutedEventArgs) Handles TAGCOMBO.SelectionChanged
+        If View IsNot Nothing Then
+            View.Refresh()
+        End If
+    End Sub
 
     Private Sub Button3_click(sender As Object, e As RoutedEventArgs)
         Me.Close()
 
 
+    End Sub
+
+
+    Private Sub Window_PreviewKeyDown(sender As Object, e As KeyEventArgs) Handles Me.PreviewKeyDown
+        If e.Key = Key.Escape Then
+            Me.Close()
+        End If
+    End Sub
+
+    Private Sub datagridselectionchange(sender As Object, e As RoutedEventArgs) Handles SearchResult.SelectionChanged
+        If SearchResult.SelectedItem IsNot Nothing Then
+            Dim selectedItem As Item = CType(SearchResult.SelectedItem, Item)
+
+            ItemID.Text = selectedItem.ID
+            nametxt.Text = selectedItem.Name
+            desctxt.Text = selectedItem.Description
+            TAGCOMBO.SelectedValue = selectedItem.TagID
+            locationtxt.Text = selectedItem.Location
+            stocktxt.Text = selectedItem.Stock
+            purchasetxt.Text = selectedItem.BuyingPrice
+            retailtxt.Text = selectedItem.SellingPrice
+            barcodetxt.Text = selectedItem.Barcode
+            clearbut.Visibility = Visibility.Visible
+            delbutton.Visibility = Visibility.Visible
+            updatebutton.Visibility = Visibility.Visible
+
+        End If
+
+
+    End Sub
+
+    Private Sub Clearbutton_Click(sender As Object, e As RoutedEventArgs) Handles clearbut.Click
+        ItemID.Text = Nothing
+        nametxt.Text = Nothing
+        desctxt.Text = Nothing
+        TAGCOMBO.SelectedIndex = -1
+        locationtxt.Text = Nothing
+        stocktxt.Text = Nothing
+        purchasetxt.Text = Nothing
+        retailtxt.Text = Nothing
+        barcodetxt.Text = Nothing
+        clearbut.Visibility = Visibility.Collapsed
+        delbutton.Visibility = Visibility.Collapsed
+        updatebutton.Visibility = Visibility.Collapsed
+
+
+
+        SearchResult.ItemsSource = Nothing
+
+        SearchResult.Items.Clear()
+        items = LoadItemsFromDatabase()
+
+        View = CollectionViewSource.GetDefaultView(items)
+        View.Filter = AddressOf FilterItems
+
+        SearchResult.ItemsSource = View
+        SearchResult.Columns(5).Visibility = Visibility.Collapsed
+        SearchResult.Columns(6).Visibility = Visibility.Collapsed
+        SearchResult.Columns(7).Visibility = Visibility.Collapsed
+        SearchResult.Columns(8).Visibility = Visibility.Collapsed
+        SearchResult.Columns(9).Visibility = Visibility.Collapsed
+
+        SearchResult.Columns(0).Width = 35 ' SerielNumber
+        SearchResult.Columns(1).Width = 150 ' ItemName
+        SearchResult.Columns(2).Width = 180 ' Desc
+        SearchResult.Columns(3).Width = 135 ' Barcode
+        SearchResult.Columns(4).Width = 120 ' TagName
+
+        tagfill()
+        clearbut.Visibility = Visibility.Collapsed
+        delbutton.Visibility = Visibility.Collapsed
+        updatebutton.Visibility = Visibility.Collapsed
+
+
+
+    End Sub
+
+    Private Sub deletebutton_click(sender As Object, e As RoutedEventArgs) Handles delbutton.Click
+        Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
+            Using com As New SQLiteCommand("DELETE FROM ITEMS WHERE SerielNumber = @SN", con)
+                con.Open()
+                com.Parameters.AddWithValue("@SN", ItemID.Text)
+                Try
+                    com.ExecuteNonQuery()
+                    MsgBox("Successfully deleted item: " & nametxt.Text)
+                Catch ex As SQLiteException
+                    MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+                Catch ex As Exception
+                    MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+                End Try
+
+            End Using
+            con.Close()
+
+        End Using
+
+
+
+        ItemID.Text = Nothing
+        nametxt.Text = Nothing
+        desctxt.Text = Nothing
+        TAGCOMBO.SelectedIndex = -1
+        locationtxt.Text = Nothing
+        stocktxt.Text = Nothing
+        purchasetxt.Text = Nothing
+        retailtxt.Text = Nothing
+        barcodetxt.Text = Nothing
+        clearbut.Visibility = Visibility.Collapsed
+        delbutton.Visibility = Visibility.Collapsed
+        updatebutton.Visibility = Visibility.Collapsed
+
+
+
+        SearchResult.ItemsSource = Nothing
+
+        SearchResult.Items.Clear()
+        items = LoadItemsFromDatabase()
+
+        View = CollectionViewSource.GetDefaultView(items)
+        View.Filter = AddressOf FilterItems
+
+        SearchResult.ItemsSource = View
+        SearchResult.Columns(5).Visibility = Visibility.Collapsed
+        SearchResult.Columns(6).Visibility = Visibility.Collapsed
+        SearchResult.Columns(7).Visibility = Visibility.Collapsed
+        SearchResult.Columns(8).Visibility = Visibility.Collapsed
+        SearchResult.Columns(9).Visibility = Visibility.Collapsed
+
+        SearchResult.Columns(0).Width = 35 ' SerielNumber
+        SearchResult.Columns(1).Width = 150 ' ItemName
+        SearchResult.Columns(2).Width = 180 ' Desc
+        SearchResult.Columns(3).Width = 135 ' Barcode
+        SearchResult.Columns(4).Width = 120 ' TagName
+
+        tagfill()
+        clearbut.Visibility = Visibility.Collapsed
+        delbutton.Visibility = Visibility.Collapsed
+        updatebutton.Visibility = Visibility.Collapsed
+
+
+    End Sub
+    Private Sub updatebutton_click(sender As Object, e As RoutedEventArgs) Handles updatebutton.Click
+        If nametxt.Text = Nothing Then
+            nametxt.Focus()
+        ElseIf desctxt.Text = Nothing Then
+            desctxt.Focus()
+        ElseIf TAGCOMBO.SelectedIndex < 0 Then
+            TAGCOMBO.Focus()
+        ElseIf locationtxt.Text = Nothing Then
+            locationtxt.Focus()
+
+
+        ElseIf stocktxt.Text = Nothing Then
+            stocktxt.Focus()
+
+        ElseIf purchasetxt.Text = Nothing Then
+            purchasetxt.Focus()
+        ElseIf retailtxt.Text = Nothing Then
+            retailtxt.Focus()
+
+        ElseIf barcodetxt.Text = Nothing Then
+            barcodetxt.Focus()
+        Else
+            Using con As New SQLiteConnection(CStr("Data source = InvenManage.db"))
+                Try
+
+
+                    Using cmd As New SQLiteCommand("UPDATE ITEMS SET ItemName = @NameItem,
+ Desc = @Description,
+ TagID = @IDTag,
+ Location = @Loc,
+ Stock = @Stock,
+ PurchasePrice = @Purchase,
+ RetailPrice = @Retail,
+ Barcode =  @Barc WHERE SerielNumber = @ID", con)
+                        cmd.Parameters.AddWithValue("@NameItem", nametxt.Text)
+                        cmd.Parameters.AddWithValue("@Description", desctxt.Text)
+                        cmd.Parameters.AddWithValue("@IDTag", TAGCOMBO.SelectedValue)
+                        cmd.Parameters.AddWithValue("@Loc", locationtxt.Text)
+                        cmd.Parameters.AddWithValue("@Stock", stocktxt.Text)
+                        cmd.Parameters.AddWithValue("@Purchase", purchasetxt.Text)
+                        cmd.Parameters.AddWithValue("@Retail", retailtxt.Text)
+                        cmd.Parameters.AddWithValue("@Barc", barcodetxt.Text)
+                        cmd.Parameters.AddWithValue("@ID", ItemID.Text)
+
+                        con.Open()
+                        cmd.ExecuteNonQuery()
+                        MsgBox("Successfully Updated Item: " & nametxt.Text)
+
+                        con.Close()
+                    End Using
+                Catch ex As SQLiteException
+                    MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+                Catch ex As Exception
+                    MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+                End Try
+            End Using
+
+        End If
     End Sub
 End Class
