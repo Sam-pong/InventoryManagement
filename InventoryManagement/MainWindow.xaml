@@ -94,6 +94,53 @@
             </Button>
             <TextBlock TextWrapping="Wrap" Text="Edit Item" FontFamily="Global Monospace" FontSize="20" Height="25" Foreground="Black"/>
         </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Height="112" Margin="310,55,0,0" VerticalAlignment="Top" Width="140">
+            <Button Content="" HorizontalAlignment="Center" Height="60" Width="100" VerticalAlignment="Center" FontFamily="Global Monospace" Click="Button3_Click" FontSize="22" FontWeight="Bold" Cursor="Hand" >
+                <Button.Background>
+                    <ImageBrush ImageSource="/transaction (1).png" Stretch="Uniform"/>
+                </Button.Background>
+
+                <Button.Effect>
+                    <DropShadowEffect BlurRadius="10"/>
+                </Button.Effect>
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.Style>
+
+                    <Style TargetType="{x:Type Button}">
+
+                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter 
+                                            HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+
+            </Button>
+            <TextBlock  TextWrapping="Wrap"                TextAlignment="Center"
+ FontFamily="Global Monospace" FontSize="20" Foreground="Black">
+                  Transaction
+    <LineBreak/>
+                    Entry
+            </TextBlock>
+        </StackPanel>
 
     </Grid>
 </Window>

@@ -129,6 +129,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="EditItemWindow.vb" />
+    <Compile Include="EditQuanitity.xaml.vb">
+      <DependentUpon>EditQuanitity.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Item.vb" />
     <Compile Include="NewItemWindow.xaml.vb">
       <DependentUpon>NewItemWindow.xaml</DependentUpon>
@@ -136,9 +139,14 @@
     <Compile Include="NewTag.xaml.vb">
       <DependentUpon>NewTag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TransactionEntry.vb" />
     <Page Include="EditItemWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EditQuanitity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -159,6 +167,10 @@
     <Page Include="NewTag.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TransactionEntry.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +247,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="vecteezy_beautiful-colorful-gradient-background-combination-of_7105420.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="transaction.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="transaction %281%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />

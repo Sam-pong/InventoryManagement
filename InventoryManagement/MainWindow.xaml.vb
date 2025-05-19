@@ -8,4 +8,8 @@
         Dim edititemwin As New EditItemWindow
         edititemwin.ShowDialog()
     End Sub
+    Private Sub Button3_Click(sender As Object, e As RoutedEventArgs)
+        Dim newtrans As New TransactionEntry
+        newtrans.ShowDialog()
+    End Sub
 End Class
