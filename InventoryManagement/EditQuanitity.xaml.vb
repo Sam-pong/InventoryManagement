@@ -12,6 +12,8 @@
         bakcend.Text = UpdatedQuantity
         QuantityAdjust.Text = UpdatedQuantity
         QuantityAdjust.Focus()
+        QuantityAdjust.CaretIndex = QuantityAdjust.Text.Length
+
 
     End Sub
 

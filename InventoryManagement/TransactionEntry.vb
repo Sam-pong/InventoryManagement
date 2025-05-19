@@ -10,13 +10,22 @@ Imports Xceed.Wpf.Toolkit.Primitives
 Class TransactionEntry
 
     Dim inormaybeout As Integer
+    Dim totaloritem As Integer
+    Private ItemsList As ObservableCollection(Of Item)
+    Private filteredItems As List(Of Item)
+    Private allItems As ObservableCollection(Of Item)
+    Private TargetItems As ObservableCollection(Of Item)
+
+
+
+
+
 
     Private Sub Button3_click(sender As Object, e As RoutedEventArgs)
         Me.Close()
 
 
     End Sub
-    Private allItems As ObservableCollection(Of Item)
 
 
 
@@ -72,6 +81,51 @@ Class TransactionEntry
 
         End If
     End Sub
+
+    Private Sub button8_click(sender As Object, e As RoutedEventArgs)
+        Try
+
+
+            Dim selectedItem = TryCast(dtgrid.SelectedItem, Item)
+            If selectedItem Is Nothing Then Exit Sub
+
+            Dim popup As New AddDiscount()
+            popup.DiscountAdded = selectedItem.Discount
+
+
+            If popup.ShowDialog() = True Then
+                selectedItem.Discount = popup.DiscountAdded
+                totaloritem = popup.itemortotal
+                If inormaybeout = 0 Then
+                    If popup.itemortotal = 0 Then
+                        selectedItem.Total = (Convert.ToDecimal(selectedItem.BuyingPrice) - Convert.ToDecimal(selectedItem.Discount)) * Convert.ToDecimal(selectedItem.Quantity)
+                        selectedItem.Type = "Stock In"
+                    ElseIf popup.itemortotal = 1 Then
+                        selectedItem.Total = (Convert.ToDecimal(selectedItem.Quantity) * Convert.ToDecimal(selectedItem.BuyingPrice)) - Convert.ToDecimal(selectedItem.Discount)
+                        selectedItem.Type = "Stock In"
+                    End If
+
+                ElseIf inormaybeout = 1 Then
+                    If popup.itemortotal = 0 Then
+                        selectedItem.Total = (Convert.ToDecimal(selectedItem.BuyingPrice) - Convert.ToDecimal(selectedItem.Discount)) * Convert.ToDecimal(selectedItem.Quantity)
+                        selectedItem.Type = "Stock Out"
+                    ElseIf popup.itemortotal = 1 Then
+                        selectedItem.Total = (Convert.ToDecimal(selectedItem.Quantity) * Convert.ToDecimal(selectedItem.SellingPrice)) - Convert.ToDecimal(selectedItem.Discount)
+                        selectedItem.Type = "Stock Out"
+                    End If
+                End If
+
+
+                dtgrid.Items.Refresh()
+                subtotalanddiscount()
+
+            End If
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
     Private Sub searchbar_PreviewKeyDown(sender As Object, e As KeyEventArgs) Handles SearchBar.PreviewKeyDown
         If e.Key = Key.Down Then
             SearchDataGrid.Focus()
@@ -101,14 +155,26 @@ Class TransactionEntry
             If popup.ShowDialog() = True Then
                 selectedItem.Quantity = popup.UpdatedQuantity
                 If inormaybeout = 0 Then
-                    selectedItem.Total = Convert.ToDecimal(selectedItem.Quantity) * Convert.ToDecimal(selectedItem.BuyingPrice)
-                    selectedItem.Type = "Stock In"
+                    If totaloritem = 0 Then
+                        selectedItem.Total = (Convert.ToDecimal(selectedItem.BuyingPrice) - Convert.ToDecimal(selectedItem.Discount)) * Convert.ToDecimal(selectedItem.Quantity)
+                        selectedItem.Type = "Stock In"
+                    ElseIf totaloritem = 1 Then
+                        selectedItem.Total = (Convert.ToDecimal(selectedItem.Quantity) * Convert.ToDecimal(selectedItem.BuyingPrice)) - Convert.ToDecimal(selectedItem.Discount)
+                        selectedItem.Type = "Stock In"
+                    End If
+
                 ElseIf inormaybeout = 1 Then
-                    selectedItem.Total = Convert.ToDecimal(selectedItem.Quantity) * Convert.ToDecimal(selectedItem.SellingPrice)
-                    selectedItem.Type = "Stock Out"
+                    If totaloritem = 0 Then
+                        selectedItem.Total = (Convert.ToDecimal(selectedItem.BuyingPrice) - Convert.ToDecimal(selectedItem.Discount)) * Convert.ToDecimal(selectedItem.Quantity)
+                        selectedItem.Type = "Stock Out"
+                    ElseIf totaloritem = 1 Then
+                        selectedItem.Total = (Convert.ToDecimal(selectedItem.Quantity) * Convert.ToDecimal(selectedItem.SellingPrice)) - Convert.ToDecimal(selectedItem.Discount)
+                        selectedItem.Type = "Stock Out"
+                    End If
                 End If
 
                 dtgrid.Items.Refresh()
+                subtotalanddiscount()
 
             End If
 
@@ -121,7 +187,9 @@ Class TransactionEntry
 
         If selectedItem IsNot Nothing Then
             TargetItems.Remove(selectedItem)
+
             dtgrid.Items.Refresh()
+            subtotalanddiscount()
         End If
 
     End Sub
@@ -129,11 +197,8 @@ Class TransactionEntry
         Dim selectedItem = CType(SearchDataGrid.SelectedItem, Item)
         If selectedItem IsNot Nothing Then
             If inormaybeout = 0 Then
-                selectedItem.Total = Convert.ToDecimal(selectedItem.Quantity) * Convert.ToDecimal(selectedItem.BuyingPrice)
                 selectedItem.Type = "Stock In"
-
             ElseIf inormaybeout = 1 Then
-                selectedItem.Total = Convert.ToDecimal(selectedItem.Quantity) * Convert.ToDecimal(selectedItem.SellingPrice)
                 selectedItem.Type = "Stock Out"
             End If
             Dim alreadyExists As Boolean = TargetItems.Any(Function(i) i.Barcode = selectedItem.Barcode)
@@ -150,18 +215,23 @@ Class TransactionEntry
 
 
 
-
     End Sub
-    Private Sub thing_keydown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+    Private Sub Window_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.Key = Key.F2 Then
             button5_click(editquantity, New RoutedEventArgs())
             e.Handled = True
-        ElseIf e.Key = Key.Delete Then
-            delbut_click(deletebutton, New RoutedEventArgs())
+
+
+        End If
+
+        If e.Key = Key.F3 Then
+            button8_click(addiscount, New RoutedEventArgs)
             e.Handled = True
 
         End If
     End Sub
+
+
     Private Sub ItemsGrid_PreviewKeyDown(sender As Object, e As KeyEventArgs) Handles SearchDataGrid.PreviewKeyDown
         If e.Key = Key.Enter Then
 
@@ -197,13 +267,12 @@ Class TransactionEntry
             End If
             e.Handled = True
 
-
             SearchBar.Text = Nothing
+            subtotalanddiscount()
 
         End If
     End Sub
-    Private ItemsList As ObservableCollection(Of Item)
-    Private filteredItems As List(Of Item)
+
     Private Sub dtgrid_keydown(sender As Object, e As KeyEventArgs) Handles dtgrid.KeyDown
         If e.Key = Key.Enter Then
 
@@ -211,16 +280,15 @@ Class TransactionEntry
             SearchBar.Focus()
         End If
 
+
+    End Sub
+    Private Sub dtgrid_PreviewKeyDown(sender As Object, e As KeyEventArgs) Handles dtgrid.PreviewKeyDown
         If e.Key = Key.Delete Then
             delbut_click(deletebutton, New RoutedEventArgs())
             e.Handled = True
-
         End If
-
     End Sub
-    Sub testing()
 
-    End Sub
     Private Sub SearchBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles SearchBar.TextChanged
         SearchDataGrid.Visibility = Visibility.Visible
         If allItems Is Nothing Then Return
@@ -237,12 +305,6 @@ Class TransactionEntry
         SearchDataGrid.ItemsSource = Nothing
         SearchDataGrid.ItemsSource = filteredItems
     End Sub
-
-
-
-
-    Private TargetItems As ObservableCollection(Of Item)
-
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         TargetItems = New ObservableCollection(Of Item)()
         dtgrid.ItemsSource = TargetItems
@@ -276,7 +338,6 @@ Class TransactionEntry
 
 
     End Sub
-
     Private Sub combochangeindex(sender As Object, e As RoutedEventArgs) Handles inorout.SelectionChanged
         Dim selectedItem = TryCast(dtgrid.SelectedItem, Item)
         Try
@@ -299,6 +360,34 @@ Class TransactionEntry
         End Try
     End Sub
 
+    Sub subtotalanddiscount()
+        Dim totalDiscount As Decimal = 0
+        Dim totalSubtotal As Decimal = 0
 
+        For Each item As Item In dtgrid.Items
+            If item IsNot Nothing Then
+                totalDiscount += Convert.ToDecimal(item.Discount)
+                totalSubtotal += Convert.ToDecimal(item.Total)
+            End If
+        Next
+
+        discounttotal.Content = totalDiscount.ToString("N2")
+        subtotal.Content = totalSubtotal.ToString("N2")
+
+    End Sub
+
+    Private Sub taxcheck_check(sender As Object, e As RoutedEventArgs) Handles taxcheck.Checked
+        If taxcheck.IsChecked = True Then
+            taxlabel.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FF000000"))
+            taxs.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FF000000"))
+        End If
+    End Sub
+    Private Sub taxcheck_uncheck(sender As Object, e As RoutedEventArgs) Handles taxcheck.Unchecked
+        If taxcheck.IsChecked = False Then
+            taxlabel.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FF5A5353"))
+            taxs.Foreground = New SolidColorBrush(ColorConverter.ConvertFromString("#FF5A5353"))
+        End If
+
+    End Sub
 
 End Class
