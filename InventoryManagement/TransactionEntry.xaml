@@ -8,10 +8,7 @@
         KeyDown="Window_KeyDown"
         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
 
-    Title="Transaction Entry" Height="810" Width="1425"
-                     AllowsTransparency="True"
-          WindowStyle="None"
-         ResizeMode="NoResize" WindowStartupLocation="CenterScreen"     >
+    Title="Transaction Entry" Height="810" Width="1425" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None"     >
 
     <Window.Resources>
 
@@ -141,10 +138,12 @@
                 </DatePicker>
 
             </StackPanel>
-            <StackPanel Height="50" Margin="944,17,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left"/>
+            <StackPanel Height="50" Margin="944,17,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left">
+                <Label x:Name="reflabel" Content="Label" Width="457" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="DarkOrange" FontFamily="Global Monospace" FontWeight="Bold" FontSize="36"/>
+            </StackPanel>
             <StackPanel Height="50" Margin="0,178,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="1371" HorizontalAlignment="Center">
                 <Label Content="Item" Width="933" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
-                <Button x:Name="deletebutton" Content="Delete"  Click="delbut_Click" Background="{x:Null}" Foreground="#FFAB1010" FontSize="20" FontFamily="Global Monospace" Width="90" />
+                <Button x:Name="deletebutton" Content="Delete"  Click="delbut_Click" Background="{x:Null}" Foreground="#FFAB1010" FontSize="20" FontFamily="Global Monospace" Width="90" BorderBrush="{x:Null}" />
                 <Button x:Name="addiscount" Content="Add Discount" FontFamily="Global Monospace" FontSize="20" Click="Button8_Click" Background="{x:Null}" BorderBrush="{x:Null}" Width="160" />
                 <Button x:Name="editquantity" Content="Edit Quantity" Click="Button5_Click" BorderBrush="{x:Null}" Background="{x:Null}" FontFamily="Global Monospace" FontSize="20" Width="183"  />
 
@@ -208,7 +207,7 @@
             <StackPanel Height="50" Margin="708,72,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4" Width="462" HorizontalAlignment="Left">
                 <Label Content="Notes" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
 
-                <xctk:WatermarkTextBox x:Name="retailtxt" Width="220" Height="42" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Global Monospace" FontSize="22"
+                <xctk:WatermarkTextBox x:Name="notes" Width="220" Height="42" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Global Monospace" FontSize="22"
                     Watermark="[Enter Text]" SelectionTextBrush="White" TabIndex="5" />
 
             </StackPanel>
@@ -219,7 +218,7 @@
                     Watermark="[Enter Barcode]" SelectionTextBrush="White" TabIndex="4" />
 
             </StackPanel>
-            <Button Content="Close" Margin="1318,96,0,0" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold" FontStyle="Italic" Background="{x:Null}" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Click="Button3_Click" Style="{StaticResource HoverButtonStyle}" VerticalAlignment="Top" Width="88" TabIndex="13"/>
+            <Button Content="Close" Margin="1329,116,0,0" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold" FontStyle="Italic" Background="{x:Null}" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Click="Button3_Click" Style="{StaticResource HoverButtonStyle}" VerticalAlignment="Top" Width="88" TabIndex="13"/>
             <StackPanel Margin="241,154,199,86">
                 <xctk:WatermarkTextBox x:Name="SearchBar"  VerticalContentAlignment="Center"  Watermark="[Search by Barcode OR Item Name]" HorizontalContentAlignment="Center"  Height="75" TextWrapping="Wrap" Width="517" Background="#FF86C2C7" BorderBrush="{x:Null}" FontFamily="Global Monospace" FontSize="24" HorizontalAlignment="Left" VerticalAlignment="Top" TabIndex="1"/>
                 <DataGrid x:Name="SearchDataGrid" Height="386" d:ItemsSource="{d:SampleData ItemCount=5}" BorderBrush="Black" FontFamily="Global Monospace" FontSize="24" IsReadOnly="True" FontWeight="Bold" SelectionMode="Single" AlternatingRowBackground="#FF85ABAD" RowBackground="#808AC4C7" AlternationCount="2" TabIndex="11" IsTabStop="True" Background="#FF86C2C7" Visibility="Hidden" >
@@ -236,27 +235,29 @@
                     </DataGrid.Effect>
                 </DataGrid>
             </StackPanel>
-            <StackPanel Margin="22,637,23,119" Orientation="Horizontal" Background="#808AC4C7" Height="46" Width="1371">
-                <Label Content="Sub Total" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Width="1083" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold"/>
+            <StackPanel Margin="22,637,0,0" Orientation="Horizontal" Background="#808AC4C7" Height="46" Width="1219" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Label Content="Sub Total" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Width="924" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold"/>
                 <Label x:Name="subtotal" Content="0" Width="285" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" FontFamily="Global Monospace" FontSize="28" FontWeight="Bold" Background="{x:Null}" Foreground="Black"/>
             </StackPanel>
-            <StackPanel Margin="23,586,23,170" Orientation="Horizontal" Background="#FF74A1A4" Height="46" Width="1371">
-                <Label Content="Total Discount" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Width="1083" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold"/>
+            <StackPanel Margin="23,586,0,0" Orientation="Horizontal" Background="#FF74A1A4" Height="46" Width="1218" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Label Content="Total Discount" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Width="923" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold"/>
                 <Label x:Name="discounttotal" Content="0" Width="285" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" FontFamily="Global Monospace" FontSize="28" FontWeight="Bold" Background="{x:Null}" Foreground="Black"/>
             </StackPanel>
-            <StackPanel Margin="0,688,0,74" Orientation="Horizontal" HorizontalAlignment="Center" Background="#FF74A1A4" Width="1371" Height="40">
-                <Label Width="918" />
-                <Button Width="99" Style="{StaticResource HoverButtonStyle2}" HorizontalContentAlignment="Right"  RenderTransformOrigin="0.5,0.5" Content="Edit Taxes" FontFamily="Global Monospace" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="14" >
+            <StackPanel Margin="23,688,0,0" Orientation="Horizontal" HorizontalAlignment="Left" Background="#FF74A1A4" Width="1218" Height="40" VerticalAlignment="Top">
+                <Label Width="758" />
+                <Button Width="99" Click="Button95_Click" Style="{StaticResource HoverButtonStyle2}" HorizontalContentAlignment="Right"  RenderTransformOrigin="0.5,0.5" Content="Edit Taxes" FontFamily="Global Monospace" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="14" >
 
                 </Button>
                 <CheckBox  x:Name="taxcheck" Width="20" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" />
                 <Label x:Name="taxlabel" Content="Tax" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Width="45" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" Background="{x:Null}" Foreground="#FF5A5353"/>
                 <Label x:Name="taxs" Content="0" Width="285" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold" Background="{x:Null}" Foreground="#FF5A5353"/>
             </StackPanel>
-            <StackPanel Margin="23,733,23,23" Orientation="Horizontal" Background="#808AC4C7" Width="1371" Height="46">
-                <Label Content="Grand Total" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Width="1083" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold"/>
-                <Label x:Name="grandtotal" Content="0" Width="285" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" FontFamily="Global Monospace" FontSize="32" FontWeight="Bold" Background="{x:Null}" Foreground="Black"/>
+            <StackPanel Margin="23,733,0,0" Orientation="Horizontal" Background="#808AC4C7" Width="1218" Height="46" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Label Content="Grand Total" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Width="923" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold"/>
+                <Label x:Name="grandtotalam" Content="0" Width="285" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" FontFamily="Global Monospace" FontSize="32" FontWeight="Bold" Background="{x:Null}" Foreground="Black"/>
             </StackPanel>
+            <Button x:Name="SaveButton" Style="{StaticResource HoverButtonStyle2}" Content="Save" HorizontalAlignment="Left" Margin="1246,733,0,0" VerticalAlignment="Top" Height="46" Width="148" FontFamily="Global Monospace" FontSize="22" BorderBrush="#FF74A1A4" Background="#FF74A1A4" FontWeight="Bold" Click="Savebutton_click" />
+            <DataGrid x:Name="debugdg" HorizontalAlignment="Left" Height="712" Margin="101,67,0,0" VerticalAlignment="Top" Width="1190" d:ItemsSource="{d:SampleData ItemCount=5}" Visibility="Hidden"/>
         </Grid>
     </Border>
 </Window>

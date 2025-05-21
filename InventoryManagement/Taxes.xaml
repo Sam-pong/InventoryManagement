@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:InventoryManagement" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="Taxes" Height="330" Width="570"  ShowInTaskbar="False" WindowStyle="None"
+        Title="Taxes" Height="455" Width="915"  ShowInTaskbar="False" WindowStyle="None"
                          AllowsTransparency="True"
      ResizeMode="NoResize" WindowStartupLocation="CenterScreen"     >
     <Window.Resources>
@@ -96,11 +96,51 @@
             <DropShadowEffect/>
         </Border.Effect>
         <Grid>
-            <xctk:WatermarkTextBox x:Name="QuantityAdjust"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,45,0,0" Text="1" TextWrapping="Wrap"  VerticalAlignment="Top" Width="264" FontFamily="Global Monospace" FontSize="24" Height="51" Background="#FF86C2C7" BorderBrush="{x:Null}" TabIndex="0"/>
-            <Button x:Name="Enterbutton" Content="Set Quantity" HorizontalAlignment="Left" Margin="220,111,0,0" VerticalAlignment="Top" FontFamily="Global Monospace" FontSize="22" Background="{x:Null}" FontWeight="Bold" TabIndex="1"/>
-            <Button Content="Cancel" Margin="294,146,0,0" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold" Background="{x:Null}" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Click="Button3_Click" Style="{StaticResource HoverButtonStyleNT}" VerticalAlignment="Top" Width="88" TabIndex="2"/>
-            <TextBox x:Name="bakcend" HorizontalAlignment="Left" Margin="36,154,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Visibility="Hidden"/>
+            <Button Content="Close" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold" Background="{x:Null}" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Click="Button3_Click" Style="{StaticResource HoverButtonStyleNT}" VerticalAlignment="Top" TabIndex="6" Height="20" Margin="311,332,0,0"/>
 
+            <TextBox x:Name="bakcend" HorizontalAlignment="Left" Margin="36,154,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Visibility="Hidden"/>
+            <DataGrid x:Name="dtgrid" HorizontalAlignment="Left" Height="427" Margin="384,0,0,0" VerticalAlignment="Center" Width="513" Background="#808AC4C7" BorderBrush="Black" FontFamily="Global Monospace" FontSize="24" IsReadOnly="True" FontWeight="Bold" SelectionMode="Single" AlternatingRowBackground="#FF85ABAD" RowBackground="#808AC4C7" AlternationCount="2" TabIndex="11" IsTabStop="True"  >
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#FF8AC4C7"/>
+                        <Setter Property="BorderBrush" Value="black"/>
+                        <Setter Property="BorderThickness" Value="0.5"/>
+
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Effect>
+                    <DropShadowEffect/>
+                </DataGrid.Effect>
+            </DataGrid>
+            <StackPanel Height="50" Margin="8,12,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="369" HorizontalAlignment="Left">
+               
+                <Label Content="ID" VerticalContentAlignment="Center" Width="33" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold"/>
+                <Button x:Name="New" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" Width="50" FontFamily="Global Monospace" FontStyle="Italic" FontWeight="Bold" Content="(New)" Background="{x:Null}" BorderBrush="{x:Null}" FontSize="16" />
+                <TextBox x:Name="ID" TextWrapping="Wrap" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Text=" " Width="142" FontSize="22" FontFamily="Global Monospace" Background="{x:Null}" FontWeight="Bold" BorderBrush="{x:Null}" IsReadOnly="True"/>
+            </StackPanel>
+            <Button x:Name="addtaxbtn" Content="Add New Tax" HorizontalAlignment="Left" Margin="228,262,0,0" VerticalAlignment="Top" Background="{x:Null}" FontFamily="Global Monospace" FontWeight="Bold" FontSize="22" BorderBrush="{x:Null}" Click="Button_Click" TabIndex="6"/>
+
+            <StackPanel Height="50" Margin="8,122,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="369" HorizontalAlignment="Left">
+                <Label Content="Tax" VerticalContentAlignment="Center" Width="206" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold"/>
+                <TextBox x:Name="taxlbl" TextWrapping="Wrap" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Text=" " Width="147" FontSize="22" FontFamily="Global Monospace" Background="{x:Null}" FontWeight="Bold" BorderBrush="{x:Null}" TabIndex="2"/>
+            </StackPanel>
+            <CheckBox x:Name="Percentage" Content="Percentage" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="46,179,0,0" VerticalAlignment="Top" FontFamily="Global Monospace" FontSize="18" FontWeight="Bold" TabIndex="3">
+
+            </CheckBox>
+            <CheckBox x:Name="Amount" Content="Amount" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="234,179,0,0" VerticalAlignment="Top" FontFamily="Global Monospace" FontSize="18" FontWeight="Bold" TabIndex="4">
+
+            </CheckBox>
+            <StackPanel Height="50" Margin="8,206,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4" Width="369" HorizontalAlignment="Left">
+                <Label x:Name="applydefaultlabel" VerticalContentAlignment="Center" Content="Apply by default" VerticalAlignment="Top" FontFamily="Global Monospace" FontSize="18" FontWeight="Bold" Height="47" Width="348"/>
+                <CheckBox x:Name="applydefaultcheck" Content="" VerticalAlignment="Center" Width="15" TabIndex="5"/>
+
+            </StackPanel>
+            <StackPanel Height="50" Margin="8,67,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#FF74A1A4" Width="369" HorizontalAlignment="Left">
+                <Label Content="Name" VerticalContentAlignment="Center" Width="206" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold"/>
+                <TextBox x:Name="namelbl" TextWrapping="Wrap" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Text=" " Width="147" FontSize="22" FontFamily="Global Monospace" Background="{x:Null}" FontWeight="Bold" BorderBrush="{x:Null}" TabIndex="1"/>
+            </StackPanel>
+            <Button Content="Delete Tax" HorizontalAlignment="Left" Margin="241,297,0,0" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold" Foreground="#FFAB0808" TabIndex="7"/>
+            <Button x:Name="updatetax" Content="Update Tax" HorizontalAlignment="Left" Margin="241,262,0,0" VerticalAlignment="Top" Background="{x:Null}" FontFamily="Global Monospace" FontWeight="Bold" FontSize="22" BorderBrush="{x:Null}" Click="Button4_Click" Visibility="Collapsed" TabIndex="6"/>
         </Grid>
     </Border>
 

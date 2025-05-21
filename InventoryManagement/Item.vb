@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel
 
+<Serializable()>
 Public Class Item
     Implements INotifyPropertyChanged
 
@@ -37,6 +38,7 @@ Public Class Item
 
 
     Public Property Total As Decimal
+    Public Property TotalDiscount As Decimal
     Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
 End Class
