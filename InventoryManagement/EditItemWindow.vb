@@ -2,7 +2,6 @@
 Imports System.ComponentModel
 Imports System.Data
 Imports System.Data.SQLite
-Imports Xceed.Wpf.Toolkit.Primitives
 Class EditItemWindow
 
     Private items As ObservableCollection(Of Item)

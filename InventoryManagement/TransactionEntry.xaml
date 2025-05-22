@@ -139,7 +139,8 @@
 
             </StackPanel>
             <StackPanel Height="50" Margin="944,17,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left">
-                <Label x:Name="reflabel" Content="Label" Width="457" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="DarkOrange" FontFamily="Global Monospace" FontWeight="Bold" FontSize="36"/>
+                <Button Content="New" Click="Newbutton_click" HorizontalContentAlignment="Right"  VerticalContentAlignment="Center" Style="{StaticResource HoverButtonStyle2}" Width="42" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Global Monospace" FontSize="16" FontWeight="Bold"/>
+                <Label x:Name="reflabel" Content="Error" Width="420" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="DarkOrange" FontFamily="Global Monospace" FontWeight="Bold" FontSize="36"/>
             </StackPanel>
             <StackPanel Height="50" Margin="0,178,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="1371" HorizontalAlignment="Center">
                 <Label Content="Item" Width="933" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
@@ -258,6 +259,7 @@
             </StackPanel>
             <Button x:Name="SaveButton" Style="{StaticResource HoverButtonStyle2}" Content="Save" HorizontalAlignment="Left" Margin="1246,733,0,0" VerticalAlignment="Top" Height="46" Width="148" FontFamily="Global Monospace" FontSize="22" BorderBrush="#FF74A1A4" Background="#FF74A1A4" FontWeight="Bold" Click="Savebutton_click" />
             <DataGrid x:Name="debugdg" HorizontalAlignment="Left" Height="712" Margin="101,67,0,0" VerticalAlignment="Top" Width="1190" d:ItemsSource="{d:SampleData ItemCount=5}" Visibility="Hidden"/>
+            <Button Content="Load Last Transaction" Click="loadlasttransaction_click"  Style="{StaticResource HoverButtonStyle2  }"  HorizontalAlignment="Left" Margin="1226,67,0,0" VerticalAlignment="Top" FontFamily="Global Monospace" FontSize="14" Background="{x:Null}" BorderBrush="{x:Null}" FontWeight="Bold"/>
         </Grid>
     </Border>
 </Window>

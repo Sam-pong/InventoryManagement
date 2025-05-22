@@ -1,5 +1,5 @@
-﻿Imports System.Data.SQLite
-Imports System.Data
+﻿Imports System.Data
+Imports System.Data.SQLite
 Public Class NewItemWindow
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
         Me.Close()

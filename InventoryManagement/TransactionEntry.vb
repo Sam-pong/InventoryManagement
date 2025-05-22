@@ -2,14 +2,7 @@
 Imports System.Collections.ObjectModel
 Imports System.Data
 
-Imports System.ComponentModel
-Imports System.IO
-Imports System.Runtime.Serialization.Formatters.Binary
-
 Imports System.Data.SQLite
-Imports Xceed.Wpf.Toolkit.PropertyGrid.Attributes
-Imports Xceed.Wpf.Toolkit.Primitives
-Imports System.Diagnostics.Eventing
 Class TransactionEntry
 
     Dim inormaybeout As Integer
@@ -19,6 +12,8 @@ Class TransactionEntry
     Private TargetItems As ObservableCollection(Of Item)
     Dim taxes As Decimal
     Dim perctaxes As Decimal
+    Dim refnumberexists As Integer
+    Private previousSelectionIndex As Integer = -1
 
 
 
@@ -56,13 +51,7 @@ Class TransactionEntry
                             .TagID = Convert.ToDecimal(reader("TagID")),
                             .Quantity = 1
                              }
-                        If inorout.SelectedIndex = 1 Then
-                            itm.Total = Convert.ToDecimal(reader("RetailPrice"))
-                            itm.Type = "Stock Out"
-                        Else
-                            itm.Total = Convert.ToDecimal(reader("PurchasePrice"))
-                            itm.Type = "Stock In"
-                        End If
+
 
                         allItems.Add(itm)
                     End While
@@ -243,7 +232,7 @@ Class TransactionEntry
 
                 ElseIf inormaybeout = 1 Then
                     If totaloritem = 0 Then
-                        selectedItem.Total = (Convert.ToDecimal(selectedItem.BuyingPrice) - Convert.ToDecimal(selectedItem.Discount)) * Convert.ToDecimal(selectedItem.Quantity)
+                        selectedItem.Total = (Convert.ToDecimal(selectedItem.SellingPrice) - Convert.ToDecimal(selectedItem.Discount)) * Convert.ToDecimal(selectedItem.Quantity)
                         selectedItem.TotalDiscount = (Convert.ToDecimal(selectedItem.SellingPrice) * Convert.ToDecimal(selectedItem.Quantity)) - selectedItem.Total
 
                         selectedItem.Type = "Stock Out"
@@ -257,7 +246,7 @@ Class TransactionEntry
 
                 Try
                     Using con As New SQLiteConnection("Data Source=InvenManage.db")
-                        Dim sqlstring As String = "UPDATE TRANSACTIONDETAILS SET QUANTITY = @quantity, TOTAL = @total WHERE REFNUMBER = @refnumber, TOTALDISCOUNT = @totaldiscount AND ITEMID = @itemid"
+                        Dim sqlstring As String = "UPDATE TRANSACTIONDETAILS SET QUANTITY = @quantity, TOTAL = @total , TOTALDISCOUNT = @totaldiscount WHERE REFNUMBER = @refnumber and ITEMID = @itemid"
                         Using cmd As New SQLiteCommand(sqlstring, con)
                             con.Open()
                             cmd.Parameters.AddWithValue("@refnumber", reflabel.Content)
@@ -320,15 +309,23 @@ Class TransactionEntry
         If selectedItem IsNot Nothing Then
             If inormaybeout = 0 Then
                 selectedItem.Type = "Stock In"
+
                 unitprice = selectedItem.BuyingPrice
+                selectedItem.Total = unitprice
             ElseIf inormaybeout = 1 Then
                 selectedItem.Type = "Stock Out"
                 unitprice = selectedItem.SellingPrice
+                selectedItem.Total = unitprice
+
 
             End If
             Dim alreadyExists As Boolean = TargetItems.Any(Function(i) i.Barcode = selectedItem.Barcode)
 
             If Not alreadyExists Then
+                TargetItems.Add(selectedItem)
+
+                dtgrid.Items.Refresh()
+
                 Try
 
                     Using con As New SQLiteConnection("Data Source=InvenManage.db")
@@ -354,9 +351,10 @@ Class TransactionEntry
                     MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
 
                 End Try
-                creatingslot()
-                TargetItems.Add(selectedItem)
-                dtgrid.Items.Refresh()
+                If refnumberexists = 0 Then
+                    creatingslot()
+                End If
+
             Else
                 MessageBox.Show("Item already added.")
             End If
@@ -413,9 +411,12 @@ Class TransactionEntry
             If inorout.SelectedIndex = 0 Then
                 dtgrid.Columns(7).Visibility = Visibility.Collapsed
                 dtgrid.Columns(6).Visibility = Visibility.Visible
+                inormaybeout = 0
             Else
                 dtgrid.Columns(6).Visibility = Visibility.Collapsed
                 dtgrid.Columns(7).Visibility = Visibility.Visible
+                inormaybeout = 1
+
             End If
             e.Handled = True
 
@@ -557,6 +558,7 @@ Class TransactionEntry
         LoadItemsFromDB()
         dtpicker.SelectedDate = Today
         SearchBar.Focus()
+        previousSelectionIndex = 0
 
         inorout.SelectedIndex = 0
         inormaybeout = 0
@@ -568,7 +570,6 @@ Class TransactionEntry
             .Columns(2).Visibility = Visibility.Collapsed
             .Columns(8).Visibility = Visibility.Collapsed
             .Columns(9).Visibility = Visibility.Collapsed
-            .Columns(7).Visibility = Visibility.Collapsed
             .Columns(14).Visibility = Visibility.Collapsed
 
             .Columns(0).Width = 35
@@ -650,7 +651,7 @@ WHERE td.REFNUMBER = (
                                 ElseIf itm.Type = "Stock Out" Then
                                     inorout.SelectedIndex = 1
                                 End If
-
+                                refnumberexists = 1
 
                                 TargetItems.Add(itm)
                             End While
@@ -659,7 +660,6 @@ WHERE td.REFNUMBER = (
                                 .Columns(2).Visibility = Visibility.Collapsed
                                 .Columns(8).Visibility = Visibility.Collapsed
                                 .Columns(9).Visibility = Visibility.Collapsed
-                                .Columns(7).Visibility = Visibility.Collapsed
                                 .Columns(14).Visibility = Visibility.Collapsed
 
                                 .Columns(0).Width = 35
@@ -694,26 +694,21 @@ WHERE td.REFNUMBER = (
         End Try
 
     End Sub
-
-    Sub creatingslot()
+    Sub checkrefnumber()
         Try
             Using con As New SQLiteConnection("Data Source=InvenManage.db")
-
-                Dim sqlstring As String = "INSERT INTO TRANSACTIONS (REFNUMBER, DATE, CUSTOMER , TOTALAMOUNT, SUBTOTAL, DISCOUNTTOTAL, TAXAMOUNT, TRANSTYPE, NOTES, STATUS) VALUES (@refnumber, @date, @customer, @totalamount, @subtotal,  @discounttotal, @taxamount, @transtype, @notes, @status)"
+                Dim sqlstring As String = "SELECT REFNUMBER FROM TRANSACTIONS WHERE REFNUMBER = @refnumber"
                 Using cmd As New SQLiteCommand(sqlstring, con)
-                    con.Open()
                     cmd.Parameters.AddWithValue("@refnumber", reflabel.Content)
-                    cmd.Parameters.AddWithValue("@date", dtpicker.SelectedDate)
-                    cmd.Parameters.AddWithValue("@customer", "testing")
-                    cmd.Parameters.AddWithValue("@totalamount", 0)
-                    cmd.Parameters.AddWithValue("@subtotal", 0)
-                    cmd.Parameters.AddWithValue("@discounttotal", 0)
-                    cmd.Parameters.AddWithValue("@taxamount", 0)
-                    cmd.Parameters.AddWithValue("@transtype", 0)
-                    cmd.Parameters.AddWithValue("@notes", 0)
-                    cmd.Parameters.AddWithValue("@status", "Draft")
+                    con.Open()
+                    Using reader As SQLiteDataReader = cmd.ExecuteReader
+                        If Not reader.HasRows Then
+                            refnumberexists = 0
+                        Else
+                            refnumberexists = 1
 
-                    cmd.ExecuteNonQuery()
+                        End If
+                    End Using
                 End Using
             End Using
         Catch ex As SQLiteException
@@ -724,9 +719,43 @@ WHERE td.REFNUMBER = (
 
         End Try
     End Sub
+    Sub creatingslot()
+        Try
+            Using con As New SQLiteConnection("Data Source=InvenManage.db")
+                con.Open()
+                Dim sqlstring2 As String = "INSERT INTO TRANSACTIONS (REFNUMBER, DATE, CUSTOMER , TOTALAMOUNT, SUBTOTAL, DISCOUNTTOTAL, TAXAMOUNT, TRANSTYPE, NOTES, STATUS) VALUES (@refnumber, @date, @customer, @totalamount, @subtotal,  @discounttotal, @taxamount, @transtype, @notes, @status)"
+                Using cmd2 As New SQLiteCommand(sqlstring2, con)
+                    cmd2.Parameters.AddWithValue("@refnumber", reflabel.Content)
+                    cmd2.Parameters.AddWithValue("@date", dtpicker.SelectedDate)
+                    cmd2.Parameters.AddWithValue("@customer", "testing")
+                    cmd2.Parameters.AddWithValue("@totalamount", 0)
+                    cmd2.Parameters.AddWithValue("@subtotal", 0)
+                    cmd2.Parameters.AddWithValue("@discounttotal", 0)
+                    cmd2.Parameters.AddWithValue("@taxamount", 0)
+                    cmd2.Parameters.AddWithValue("@transtype", 0)
+                    cmd2.Parameters.AddWithValue("@notes", 0)
+                    cmd2.Parameters.AddWithValue("@status", "Draft")
+
+                    cmd2.ExecuteNonQuery()
+                    refnumberexists = 1
+                End Using
+            End Using
+
+
+        Catch ex As SQLiteException
+            MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+        Catch ex As Exception
+            MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+        End Try
+
+    End Sub
     Private Sub combochangeindex(sender As Object, e As RoutedEventArgs) Handles inorout.SelectionChanged
         Dim selectedItem = TryCast(dtgrid.SelectedItem, Item)
-        Try
+        If dtgrid.Items.Count = 0 Then
+
+
 
 
             If inorout.SelectedIndex = 1 Then
@@ -741,9 +770,16 @@ WHERE td.REFNUMBER = (
                 inormaybeout = 0
 
             End If
-        Catch ex As Exception
+            previousSelectionIndex = inorout.SelectedIndex
 
-        End Try
+        Else
+            MsgBox("You cannot change the transaction type after adding items.", MsgBoxStyle.Exclamation, "Error")
+            inorout.SelectedIndex = previousSelectionIndex
+
+            Return
+
+        End If
+
     End Sub
 
     Sub subtotalanddiscount()
@@ -832,6 +868,314 @@ WHERE td.REFNUMBER = (
 
     End Sub
 
+    Private Sub loadlasttransaction_click(sender As Object, e As RoutedEventArgs)
+        If dtgrid.Items.Count = 0 Then
 
+            Try
+
+
+                Using con As New SQLiteConnection("Data Source=InvenManage.db")
+                    Dim sql As String = "SELECT 
+    td.REFNUMBER, td.ITEMID, i.ITEMNAME, i.STOCK, i.TAGID, 
+    i.PurchasePrice, i.RetailPrice, td.QUANTITY, td.DISCOUNT, 
+    td.TOTAL, td.TOTALDISCOUNT, td.TRANSACTIONTYPE, i.BARCODE, i.Location, i.Desc, tgs.TAGNAME, CASE WHEN td.TRANSACTIONTYPE = 0 THEN 'Stock In' ELSE 'Stock Out' END AS TYPENAME
+FROM TRANSACTIONDETAILS td
+JOIN ITEMS i ON td.ITEMID = i.SerielNumber 
+JOIN TAGS tgs ON i.TAGID = tgs.TAGID
+
+WHERE td.REFNUMBER = (
+    SELECT MAX(REFNUMBER) FROM TRANSACTIONS
+);
+"
+                    Using cmd As New SQLiteCommand(sql, con)
+                        con.Open()
+                        Try
+                            Using reader As SQLiteDataReader = cmd.ExecuteReader
+                                While reader.Read()
+                                    reflabel.Content = reader("REFNUMBER").ToString()
+
+                                    Dim itm As New Item With {
+                                        .ID = reader("ITEMID"),
+                                        .Name = reader("ITEMNAME").ToString(),
+                                        .Description = If(IsDBNull(reader("Desc")), "", reader("Desc").ToString()),
+                                        .TagID = Convert.ToInt32(reader("TAGID")),
+                                        .Tag = reader("TAGNAME"),
+                                        .Barcode = reader("BARCODE"),
+                                        .Location = If(IsDBNull(reader("Location")), "", reader("Location").ToString()),
+                                        .Stock = Convert.ToInt32(reader("STOCK")),
+                                        .BuyingPrice = Convert.ToDecimal(reader("PurchasePrice")),
+                                        .SellingPrice = Convert.ToDecimal(reader("RetailPrice")),
+                                        .Quantity = Convert.ToInt32(reader("QUANTITY")),
+                                        .Discount = If(IsDBNull(reader("DISCOUNT")), 0D, Convert.ToDecimal(reader("DISCOUNT"))),
+                                        .Total = Convert.ToDecimal(reader("TOTAL")),
+                                        .TotalDiscount = If(IsDBNull(reader("TOTALDISCOUNT")), 0D, Convert.ToDecimal(reader("TOTALDISCOUNT"))),
+                                        .Type = reader("TYPENAME")
+                                    }
+
+                                    If itm.Type = "Stock In" Then
+                                        inorout.SelectedIndex = 0
+                                    ElseIf itm.Type = "Stock Out" Then
+                                        inorout.SelectedIndex = 1
+                                    End If
+
+
+                                    TargetItems.Add(itm)
+                                End While
+                                dtgrid.ItemsSource = TargetItems
+                                With dtgrid
+                                    .Columns(2).Visibility = Visibility.Collapsed
+                                    .Columns(8).Visibility = Visibility.Collapsed
+                                    .Columns(9).Visibility = Visibility.Collapsed
+                                    .Columns(7).Visibility = Visibility.Collapsed
+                                    .Columns(14).Visibility = Visibility.Collapsed
+
+                                    .Columns(0).Width = 35
+                                    .Columns(1).Width = 210
+                                    .Columns(3).Width = 160
+                                    .Columns(4).Width = 110
+                                    .Columns(5).Width = 110
+                                    .Columns(6).Width = 200
+                                    .Columns(8).Width = 150
+                                    .Columns(10).Width = 150
+                                End With
+
+                            End Using
+                            subtotalanddiscount()
+
+                        Catch ex As SQLiteException
+                            MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+                        Catch ex As Exception
+                            MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+                        End Try
+                    End Using
+
+                End Using
+            Catch ex As SQLiteException
+                MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+            Catch ex As Exception
+                MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+            End Try
+        Else
+            MsgBox("Discard current entry?", MsgBoxStyle.YesNoCancel, "Error")
+            If MsgBoxResult.Yes Then
+                Try
+                    Using con As New SQLiteConnection("Data Source=InvenManage.db")
+                        Dim sqlstring As String = "DELETE FROM TRANSACTIONS WHERE REFNUMBER = @refnumber;
+DELETE FROM TRANSACTIONDETAILS WHERE REFNUMBER = @refnumber"
+                        Using cmd As SQLiteCommand = New SQLiteCommand(sqlstring, con)
+                            con.Open()
+                            cmd.Parameters.AddWithValue("@refnumber", reflabel.Content)
+                            cmd.ExecuteNonQuery()
+                            Try
+
+
+                                Dim sql As String = "SELECT 
+    td.REFNUMBER, td.ITEMID, i.ITEMNAME, i.STOCK, i.TAGID, 
+    i.PurchasePrice, i.RetailPrice, td.QUANTITY, td.DISCOUNT, 
+    td.TOTAL, td.TOTALDISCOUNT, td.TRANSACTIONTYPE, i.BARCODE, i.Location, i.Desc, tgs.TAGNAME, CASE WHEN td.TRANSACTIONTYPE = 0 THEN 'Stock In' ELSE 'Stock Out' END AS TYPENAME
+FROM TRANSACTIONDETAILS td
+JOIN ITEMS i ON td.ITEMID = i.SerielNumber 
+JOIN TAGS tgs ON i.TAGID = tgs.TAGID
+
+WHERE td.REFNUMBER = (
+    SELECT MAX(REFNUMBER) FROM TRANSACTIONS
+);
+"
+                                Using cmd2 As New SQLiteCommand(sql, con)
+                                    con.Open()
+                                    Try
+                                        Using reader As SQLiteDataReader = cmd2.ExecuteReader
+                                            While reader.Read()
+                                                reflabel.Content = reader("REFNUMBER").ToString()
+
+                                                Dim itm As New Item With {
+                                                        .ID = reader("ITEMID"),
+                                                        .Name = reader("ITEMNAME").ToString(),
+                                                        .Description = If(IsDBNull(reader("Desc")), "", reader("Desc").ToString()),
+                                                        .TagID = Convert.ToInt32(reader("TAGID")),
+                                                        .Tag = reader("TAGNAME"),
+                                                        .Barcode = reader("BARCODE"),
+                                                        .Location = If(IsDBNull(reader("Location")), "", reader("Location").ToString()),
+                                                        .Stock = Convert.ToInt32(reader("STOCK")),
+                                                        .BuyingPrice = Convert.ToDecimal(reader("PurchasePrice")),
+                                                        .SellingPrice = Convert.ToDecimal(reader("RetailPrice")),
+                                                        .Quantity = Convert.ToInt32(reader("QUANTITY")),
+                                                        .Discount = If(IsDBNull(reader("DISCOUNT")), 0D, Convert.ToDecimal(reader("DISCOUNT"))),
+                                                        .Total = Convert.ToDecimal(reader("TOTAL")),
+                                                        .TotalDiscount = If(IsDBNull(reader("TOTALDISCOUNT")), 0D, Convert.ToDecimal(reader("TOTALDISCOUNT"))),
+                                                        .Type = reader("TYPENAME")
+                                                    }
+
+                                                If itm.Type = "Stock In" Then
+                                                    inorout.SelectedIndex = 0
+                                                ElseIf itm.Type = "Stock Out" Then
+                                                    inorout.SelectedIndex = 1
+                                                End If
+
+
+                                                TargetItems.Add(itm)
+                                            End While
+                                            dtgrid.ItemsSource = TargetItems
+                                            With dtgrid
+                                                .Columns(2).Visibility = Visibility.Collapsed
+                                                .Columns(8).Visibility = Visibility.Collapsed
+                                                .Columns(9).Visibility = Visibility.Collapsed
+                                                .Columns(7).Visibility = Visibility.Collapsed
+                                                .Columns(14).Visibility = Visibility.Collapsed
+
+                                                .Columns(0).Width = 35
+                                                .Columns(1).Width = 210
+                                                .Columns(3).Width = 160
+                                                .Columns(4).Width = 110
+                                                .Columns(5).Width = 110
+                                                .Columns(6).Width = 200
+                                                .Columns(8).Width = 150
+                                                .Columns(10).Width = 150
+                                            End With
+
+                                        End Using
+                                        subtotalanddiscount()
+
+                                    Catch ex As SQLiteException
+                                        MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+                                    Catch ex As Exception
+                                        MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+                                    End Try
+                                End Using
+
+                            Catch ex As SQLiteException
+                                MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+                            Catch ex As Exception
+                                MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+                            End Try
+                        End Using
+
+                    End Using
+
+
+
+                Catch ex As SQLiteException
+                MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+                Catch ex As Exception
+                    MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+                End Try
+
+            ElseIf MsgBoxResult.No Then
+                Try
+
+
+                    Using con As New SQLiteConnection("Data Source=InvenManage.db")
+                        Dim sql As String = "SELECT 
+    td.REFNUMBER, td.ITEMID, i.ITEMNAME, i.STOCK, i.TAGID, 
+    i.PurchasePrice, i.RetailPrice, td.QUANTITY, td.DISCOUNT, 
+    td.TOTAL, td.TOTALDISCOUNT, td.TRANSACTIONTYPE, i.BARCODE, i.Location, i.Desc, tgs.TAGNAME, CASE WHEN td.TRANSACTIONTYPE = 0 THEN 'Stock In' ELSE 'Stock Out' END AS TYPENAME
+FROM TRANSACTIONDETAILS td
+JOIN ITEMS i ON td.ITEMID = i.SerielNumber 
+JOIN TAGS tgs ON i.TAGID = tgs.TAGID
+
+WHERE td.REFNUMBER = (
+    SELECT MAX(REFNUMBER) FROM TRANSACTIONS
+);
+"
+                        Using cmd As New SQLiteCommand(sql, con)
+                            con.Open()
+                            Try
+                                Using reader As SQLiteDataReader = cmd.ExecuteReader
+                                    While reader.Read()
+                                        reflabel.Content = reader("REFNUMBER").ToString()
+
+                                        Dim itm As New Item With {
+                                            .ID = reader("ITEMID"),
+                                            .Name = reader("ITEMNAME").ToString(),
+                                            .Description = If(IsDBNull(reader("Desc")), "", reader("Desc").ToString()),
+                                            .TagID = Convert.ToInt32(reader("TAGID")),
+                                            .Tag = reader("TAGNAME"),
+                                            .Barcode = reader("BARCODE"),
+                                            .Location = If(IsDBNull(reader("Location")), "", reader("Location").ToString()),
+                                            .Stock = Convert.ToInt32(reader("STOCK")),
+                                            .BuyingPrice = Convert.ToDecimal(reader("PurchasePrice")),
+                                            .SellingPrice = Convert.ToDecimal(reader("RetailPrice")),
+                                            .Quantity = Convert.ToInt32(reader("QUANTITY")),
+                                            .Discount = If(IsDBNull(reader("DISCOUNT")), 0D, Convert.ToDecimal(reader("DISCOUNT"))),
+                                            .Total = Convert.ToDecimal(reader("TOTAL")),
+                                            .TotalDiscount = If(IsDBNull(reader("TOTALDISCOUNT")), 0D, Convert.ToDecimal(reader("TOTALDISCOUNT"))),
+                                            .Type = reader("TYPENAME")
+                                        }
+
+                                        If itm.Type = "Stock In" Then
+                                            inorout.SelectedIndex = 0
+                                        ElseIf itm.Type = "Stock Out" Then
+                                            inorout.SelectedIndex = 1
+                                        End If
+
+
+                                        TargetItems.Add(itm)
+                                    End While
+                                    dtgrid.ItemsSource = TargetItems
+                                    With dtgrid
+                                        .Columns(2).Visibility = Visibility.Collapsed
+                                        .Columns(8).Visibility = Visibility.Collapsed
+                                        .Columns(9).Visibility = Visibility.Collapsed
+                                        .Columns(7).Visibility = Visibility.Collapsed
+                                        .Columns(14).Visibility = Visibility.Collapsed
+
+                                        .Columns(0).Width = 35
+                                        .Columns(1).Width = 210
+                                        .Columns(3).Width = 160
+                                        .Columns(4).Width = 110
+                                        .Columns(5).Width = 110
+                                        .Columns(6).Width = 200
+                                        .Columns(8).Width = 150
+                                        .Columns(10).Width = 150
+                                    End With
+
+                                End Using
+                                subtotalanddiscount()
+
+                            Catch ex As SQLiteException
+                                MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+                            Catch ex As Exception
+                                MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+                            End Try
+                        End Using
+
+                    End Using
+                Catch ex As SQLiteException
+                    MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+
+                Catch ex As Exception
+                    MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+
+                End Try
+            ElseIf MsgBoxResult.Cancel Then
+                Return
+            End If
+        End If
+
+    End Sub
+    Private Sub newbutton_click()
+        If dtgrid.Items.Count = 0 Then
+            loadwindow()
+        Else
+            MsgBox("Discard current entry?", MsgBoxStyle.OkCancel, "Error")
+            If MsgBoxResult.Ok Then
+                loadwindow()
+            ElseIf MsgBoxResult.Cancel Then
+                Return
+            End If
+        End If
+    End Sub
 End Class
 

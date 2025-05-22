@@ -1,5 +1,5 @@
-﻿Imports System.Data.SQLite
-Imports System.Data
+﻿Imports System.Data
+Imports System.Data.SQLite
 Public Class Taxes
 
     Dim applybydef As String
@@ -129,17 +129,17 @@ Public Class Taxes
         Try
 
             If Percentage.IsChecked = True And Amount.IsChecked = False Then
-            oramm = 0
-        ElseIf Amount.IsChecked = True And Percentage.IsChecked = False Then
+                oramm = 0
+            ElseIf Amount.IsChecked = True And Percentage.IsChecked = False Then
                 oramm = 1
 
 
             End If
         Catch ex As SQLiteException
-        MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+            MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
 
         Catch ex As Exception
-        MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
 
         End Try
     End Sub
@@ -154,17 +154,17 @@ Public Class Taxes
 
 
             If Percentage.IsChecked = True And Amount.IsChecked = False Then
-            oramm = 0
-        ElseIf Amount.IsChecked = True And Percentage.IsChecked = False Then
+                oramm = 0
+            ElseIf Amount.IsChecked = True And Percentage.IsChecked = False Then
                 oramm = 1
 
 
             End If
         Catch ex As SQLiteException
-        MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
+            MsgBox("SQL Error: " & ex.Message, MsgBoxStyle.Critical, "Database Error")
 
         Catch ex As Exception
-        MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            MsgBox("Unexpected Error: " & ex.Message, MsgBoxStyle.Critical, "Error")
 
         End Try
     End Sub
