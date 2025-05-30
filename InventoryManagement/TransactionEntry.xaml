@@ -8,7 +8,7 @@
         KeyDown="Window_KeyDown"
         FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
 
-    Title="Transaction Entry" Height="810" Width="1425" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None"     >
+    Title="Transaction Entry" Height="810" Width="1425" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" Icon="/transaction (1).png"     >
 
     <Window.Resources>
 
@@ -140,7 +140,7 @@
             </StackPanel>
             <StackPanel Height="50" Margin="944,17,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left">
                 <Button Content="New" Click="Newbutton_click" HorizontalContentAlignment="Right"  VerticalContentAlignment="Center" Style="{StaticResource HoverButtonStyle2}" Width="42" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Global Monospace" FontSize="16" FontWeight="Bold"/>
-                <Label x:Name="reflabel" Content="Error" Width="420" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="DarkOrange" FontFamily="Global Monospace" FontWeight="Bold" FontSize="36"/>
+                <TextBox x:Name="reflabel" Text="Error" Width="420" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="DarkOrange" FontFamily="Global Monospace" FontWeight="Bold" FontSize="36"/>
             </StackPanel>
             <StackPanel Height="50" Margin="0,178,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="1371" HorizontalAlignment="Center">
                 <Label Content="Item" Width="933" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
@@ -213,10 +213,9 @@
 
             </StackPanel>
             <StackPanel Height="50" Margin="241,72,0,0" VerticalAlignment="Top" Orientation="Horizontal" Background="#808AC4C7" Width="462" HorizontalAlignment="Left">
-                <Label Content="Reference Number" Width="221" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
-
-                <xctk:WatermarkTextBox x:Name="barcodetxt" Width="230" Height="42" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Global Monospace" FontSize="22"
-                    Watermark="[Enter Barcode]" SelectionTextBrush="White" TabIndex="4" />
+                <Label Content="Customer" Width="180" FontFamily="Global Monospace" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center"/>
+                <xctk:WatermarkTextBox x:Name="customerlbl_" Width="280" Height="42" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Global Monospace" FontSize="22"
+                    Watermark="[Enter Customer Name]" SelectionTextBrush="White" TabIndex="4" />
 
             </StackPanel>
             <Button Content="Close" Margin="1329,116,0,0" FontFamily="Global Monospace" FontSize="22" FontWeight="Bold" FontStyle="Italic" Background="{x:Null}" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Click="Button3_Click" Style="{StaticResource HoverButtonStyle}" VerticalAlignment="Top" Width="88" TabIndex="13"/>

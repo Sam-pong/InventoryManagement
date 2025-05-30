@@ -132,22 +132,42 @@
     <Compile Include="AddDiscount.xaml.vb">
       <DependentUpon>AddDiscount.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dash.xaml.vb">
+      <DependentUpon>Dash.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditItemWindow.vb" />
     <Compile Include="EditQuanitity.xaml.vb">
       <DependentUpon>EditQuanitity.xaml</DependentUpon>
     </Compile>
     <Compile Include="Item.vb" />
+    <Compile Include="maindashboard.xaml.vb">
+      <DependentUpon>maindashboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NewItemUC.xaml.vb">
+      <DependentUpon>NewItemUC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NewItemWindow.xaml.vb">
       <DependentUpon>NewItemWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewTag.xaml.vb">
       <DependentUpon>NewTag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Recentsmodule.xaml.vb">
+      <DependentUpon>Recentsmodule.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Taxes.xaml.vb">
       <DependentUpon>Taxes.xaml</DependentUpon>
     </Compile>
     <Compile Include="TransactionEntry.vb" />
+    <Compile Include="TransactionEntryUC.xaml.vb">
+      <DependentUpon>TransactionEntryUC.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionIteems.vb" />
     <Page Include="AddDiscount.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dash.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -156,6 +176,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="EditQuanitity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="maindashboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -171,11 +195,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="NewItemUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="NewItemWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="NewTag.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Recentsmodule.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -186,6 +218,10 @@
     <Page Include="TransactionEntry.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TransactionEntryUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +304,30 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="transaction %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="supply.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="pencil.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="trans.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="alert.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="inventory.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="a-c-NqXqLPhdbvU-unsplash.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="mockaroon-YqUeLG7fMr4-unsplash.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.119.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
